@@ -22,8 +22,9 @@ public class CommandController {
     private void register(Command c){comandos.add(c);}
 
     public Action call(String s, String[] args){
-        //TODO: Cambiar esto a un encontrador de comandos
-        return comandos.getFirst().call(args);
+        Command r = StringUtils.findClosestCommand(comandos, s);
+        if (r != null){return r.call(args);}
+        else{return  new Action("No se encontró el comando " + s, ActionType.LOG);} //TODO: Debería ser Action.ERROR
     }
 
 }

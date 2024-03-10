@@ -8,7 +8,7 @@ import net.radioapp.commandController.Command;
 
 public class QuitCommand extends Command {
 
-
+    public  QuitCommand(){name = "quit";}
     private final Colors exitColor = new Colors(Colors.TYPE_TEXT, 99, 99, 99);
     @Override
     public Action call(String[] args) {

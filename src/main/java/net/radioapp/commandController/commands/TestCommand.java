@@ -6,7 +6,7 @@ import net.radioapp.commandController.Command;
 
 
 public class TestCommand extends Command {
-
+    public  TestCommand(){name = "test";}
     @Override
     public Action call(String[] args) {
         this.resultMessage = "Esto es un test";
