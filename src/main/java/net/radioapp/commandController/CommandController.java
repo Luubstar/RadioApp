@@ -16,7 +16,6 @@ public class CommandController {
     }
 
     private void start(){
-        register(new TestCommand());
         register(new QuitCommand());
         register(new HelpCommand());
         register(new LockOnOff());
@@ -27,9 +26,27 @@ public class CommandController {
     private void register(Command c){comandos.add(c);}
 
     public Action call(String s, String[] args){
-        Command r = StringUtils.findClosestCommand(comandos, s);
+        Command r = findClosestCommand(s);
         if (r != null){return r.call(args);}
         else{return  new Action("No se encontró el comando " + s, ActionType.ERROR);}
+    }
+
+    public String getHelpCommands(){
+        StringBuilder res = new StringBuilder().append("\n");
+        for(Command c: comandos){
+            res.append(c.getName()).append(" - ").append(c.getResumeMessage()).append("\n");
+        }
+        return res.toString();
+    }
+    public String getHelpCommands(String s){
+        StringBuilder res = new StringBuilder().append("\n");
+        Command c = findClosestCommand(s);
+        res.append(c.getName()).append(" - ").append(c.getHelpMessage()).append("\n");
+        return res.toString();
+    }
+
+    public Command findClosestCommand(String s){
+        return StringUtils.findClosestCommand(comandos,s);
     }
 
 }

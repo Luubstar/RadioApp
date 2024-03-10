@@ -1,5 +1,6 @@
 package net.radioapp;
 
+import net.radioapp.commandController.CommandController;
 import net.radioapp.commandController.actions.Action;
 
 public interface InputHandler {
@@ -9,4 +10,5 @@ public interface InputHandler {
     void log(String l);
     void error(String l);
     void exit(String l);
+    CommandController getController();
 }

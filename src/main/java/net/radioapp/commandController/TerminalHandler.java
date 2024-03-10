@@ -61,4 +61,8 @@ public class TerminalHandler implements InputHandler {
         System.out.print(exitColor.colorize(commandPrefix + l));
         System.exit(0);
     }
+
+    public CommandController getController() {
+        return controlador;
+    }
 }

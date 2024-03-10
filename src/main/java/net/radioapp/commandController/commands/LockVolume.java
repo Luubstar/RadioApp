@@ -6,7 +6,11 @@ import net.radioapp.commandController.actions.Action;
 import net.radioapp.commandController.actions.ActionType;
 
 public class LockVolume extends Command {
-    public LockVolume(){name = "lockvolume";}
+    public LockVolume(){
+        name = "lockvolume";
+        resumeMessage = "Bloquea que los clientes puedan cambiar manualmente su volumen";
+        helpMessage = resumeMessage;
+    }
     @Override
     public Action call(String[] args) {
         this.resultMessage = "Sistema de bloqueo de volumen alternado";
