@@ -1,7 +1,7 @@
 package net.radioapp.commandController.commands;
 
-import net.radioapp.commandController.Action;
-import net.radioapp.commandController.ActionType;
+import net.radioapp.commandController.actions.Action;
+import net.radioapp.commandController.actions.ActionType;
 import net.radioapp.commandController.Command;
 
 

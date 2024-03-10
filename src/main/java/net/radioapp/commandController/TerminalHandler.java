@@ -1,6 +1,9 @@
 package net.radioapp.commandController;
 
 import net.radioapp.InputHandler;
+import net.radioapp.Main;
+import net.radioapp.commandController.actions.Action;
+import net.radioapp.web.inputServer.Connectivity;
 
 import java.util.Scanner;
 
@@ -17,13 +20,30 @@ public class TerminalHandler implements InputHandler {
         controlador.initialize();
     }
     @Override
-    public void start() {}
+    public void start() {
+        System.out.print("¿Qué modo de conectividad desea? [P]reguntar, [S]iempre, [N]unca\n"+commandPrefix);
+        String res = Input.nextLine().toUpperCase();
+        while (!res.equals("P") && !res.equals("S") && !res.equals("N")){
+            System.out.print("¿Qué modo de conectividad desea? [P]reguntar, [S]iempre, [N]unca\n"+commandPrefix);
+            res = Input.nextLine().toUpperCase();
+        }
+
+        if(res.equals("P")){ Main.setConnectivityMode(Connectivity.ASK);}
+        else if(res.equals("N")){ Main.setConnectivityMode(Connectivity.NEVER);}
+        else{ Main.setConnectivityMode(Connectivity.ALWAYS);}
+    }
 
     @Override
     public Action getAction() {
         System.out.print("\n"+commandPrefix);
         String res = Input.nextLine().toLowerCase();
-        return controlador.call(res, new String[1]);
+
+        String[] temp = res.split(" ");
+        res = temp[0];
+        String[] args = new String[temp.length-1];
+        System.arraycopy(temp, 1, args, 0, temp.length - 1);
+
+        return controlador.call(res, args);
     }
 
     @Override

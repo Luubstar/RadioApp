@@ -1,7 +1,8 @@
 package net.radioapp.commandController;
 
-import net.radioapp.commandController.commands.QuitCommand;
-import net.radioapp.commandController.commands.TestCommand;
+import net.radioapp.commandController.actions.Action;
+import net.radioapp.commandController.actions.ActionType;
+import net.radioapp.commandController.commands.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,6 +18,10 @@ public class CommandController {
     private void start(){
         register(new TestCommand());
         register(new QuitCommand());
+        register(new HelpCommand());
+        register(new LockOnOff());
+        register(new LockFrecuency());
+        register(new LockVolume());
     }
 
     private void register(Command c){comandos.add(c);}

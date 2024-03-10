@@ -1,6 +1,6 @@
 package net.radioapp;
 
-import net.radioapp.commandController.Action;
+import net.radioapp.commandController.actions.Action;
 
 public interface InputHandler {
     void initialize();

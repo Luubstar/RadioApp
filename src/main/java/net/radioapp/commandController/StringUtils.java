@@ -8,8 +8,13 @@ public class StringUtils {
         double max = 0;
         Command res = comandos.getFirst();
         for(Command c: comandos){
-            double tmp = similarity(c.getName(), input);
-            if (tmp > max){max = tmp; res = c;}
+            for(String name : c.getAliasesAndName()) {
+                double tmp = similarity(name, input);
+                if (tmp > max) {
+                    max = tmp;
+                    res = c;
+                }
+            }
         }
         if (max >= 0.7){return res;} //TODO: Debería preguntar si es el que quieres usar
         return null;

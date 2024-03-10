@@ -1,4 +1,4 @@
-package net.radioapp.commandController;
+package net.radioapp.commandController.actions;
 
 public class Action {
     private final String res;
