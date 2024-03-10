@@ -7,5 +7,6 @@ public interface InputHandler {
     void start();
     Action getAction();
     void log(String l);
+    void error(String l);
     void exit(String l);
 }

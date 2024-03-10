@@ -11,6 +11,7 @@ public class Main {
         manejador.start();
         start();
     }
+    
     public static void start(){
         Action lastAction;
         while(true) {
@@ -21,6 +22,7 @@ public class Main {
 
     public static void filterAction(Action action){
         if (action.getType() == ActionType.LOG){manejador.log(action.getRes());}
+        else if (action.getType() == ActionType.ERROR){manejador.error(action.getRes());}
         else if(action.getType() == ActionType.QUIT){manejador.exit(action.getRes());}
     }
 }

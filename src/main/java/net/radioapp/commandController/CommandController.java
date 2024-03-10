@@ -24,7 +24,7 @@ public class CommandController {
     public Action call(String s, String[] args){
         Command r = StringUtils.findClosestCommand(comandos, s);
         if (r != null){return r.call(args);}
-        else{return  new Action("No se encontró el comando " + s, ActionType.LOG);} //TODO: Debería ser Action.ERROR
+        else{return  new Action("No se encontró el comando " + s, ActionType.ERROR);}
     }
 
 }

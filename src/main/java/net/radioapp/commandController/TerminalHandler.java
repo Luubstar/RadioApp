@@ -7,6 +7,8 @@ import java.util.Scanner;
 public class TerminalHandler implements InputHandler {
     CommandController controlador;
     Scanner Input;
+    private final Colors exitColor = new Colors(Colors.TYPE_TEXT, 99, 99, 99);
+    private final Colors errorColor = Colors.Red;
     private static final String commandPrefix = "> ";
     @Override
     public void initialize() {
@@ -28,9 +30,15 @@ public class TerminalHandler implements InputHandler {
     public void log(String l) {
         System.out.print(commandPrefix+l);
     }
+
+    @Override
+    public void error(String l) {
+        System.out.print(errorColor.colorize(commandPrefix+l));
+    }
+
     @Override
     public void exit(String l){
-        System.out.print(commandPrefix + l);
+        System.out.print(exitColor.colorize(commandPrefix + l));
         System.exit(0);
     }
 }
