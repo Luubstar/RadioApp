@@ -21,7 +21,8 @@ public class TerminalHandler implements InputHandler {
     }
     @Override
     public void start() {
-        System.out.print("¿Qué modo de conectividad desea? [P]reguntar, [S]iempre, [N]unca\n"+commandPrefix);
+        //TODO: Reactivar cuando sea necesario
+        /*System.out.print("¿Qué modo de conectividad desea? [P]reguntar, [S]iempre, [N]unca\n"+commandPrefix);
         String res = Input.nextLine().toUpperCase();
         while (!res.equals("P") && !res.equals("S") && !res.equals("N")){
             System.out.print("¿Qué modo de conectividad desea? [P]reguntar, [S]iempre, [N]unca\n"+commandPrefix);
@@ -30,7 +31,7 @@ public class TerminalHandler implements InputHandler {
 
         if(res.equals("P")){ Main.setConnectivityMode(Connectivity.ASK);}
         else if(res.equals("N")){ Main.setConnectivityMode(Connectivity.NEVER);}
-        else{ Main.setConnectivityMode(Connectivity.ALWAYS);}
+        else{ Main.setConnectivityMode(Connectivity.ALWAYS);}*/
     }
 
     @Override

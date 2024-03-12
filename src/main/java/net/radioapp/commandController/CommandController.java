@@ -21,6 +21,7 @@ public class CommandController {
         register(new LockOnOff());
         register(new LockFrecuency());
         register(new LockVolume());
+        register(new SetFrecuencyCommand());
     }
 
     private void register(Command c){comandos.add(c);}
@@ -34,7 +35,11 @@ public class CommandController {
     public String getHelpCommands(){
         StringBuilder res = new StringBuilder().append("\n");
         for(Command c: comandos){
-            res.append(c.getName()).append(" - ").append(c.getResumeMessage()).append("\n");
+            StringBuilder name = new StringBuilder().append(c.getAliasesAndName()[0]);
+            for (int i = 1; i<c.getAliasesAndName().length;i++){
+                name.append(", ").append(c.getAliasesAndName()[i]);
+            }
+            res.append(name).append(" - ").append(c.getResumeMessage()).append("\n");
         }
         return res.toString();
     }
