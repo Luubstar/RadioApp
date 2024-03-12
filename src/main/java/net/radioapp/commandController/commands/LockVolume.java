@@ -14,7 +14,6 @@ public class LockVolume extends Command {
     @Override
     public Action call(String[] args) {
         this.resultMessage = "Sistema de bloqueo de volumen alternado";
-        Main.setLockedVolume(!Main.isLockedVolume());
-        return new Action(resultMessage, ActionType.SET);
+        return new Action(this.getName(),resultMessage, ActionType.SET);
     }
 }

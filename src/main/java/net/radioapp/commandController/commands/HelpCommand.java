@@ -13,7 +13,7 @@ public class HelpCommand extends Command {
     }
     @Override
     public Action call(String[] args) {
-        if (args.length == 0){return new Action("", ActionType.HELP);}
-        return new Action(args[0], ActionType.HELPARG);
+        if (args.length == 0){return new Action(this.getName(),"", ActionType.HELP);}
+        return new Action(this.getName(),args[0], ActionType.HELPARG);
     }
 }

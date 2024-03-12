@@ -15,6 +15,6 @@ public class QuitCommand extends Command {
     }
     @Override
     public Action call(String[] args) {
-        return new Action("Aplicación cerrada exitosamente", ActionType.QUIT);
+        return new Action(this.getName(),"Aplicación cerrada exitosamente", ActionType.QUIT);
     }
 }

@@ -13,6 +13,6 @@ public class SetFrecuencyCommand extends Command {
     }
     @Override
     public Action call(String[] args) {
-        return  new Action("", ActionType.LOG);
+        return  new Action(this.getName(),"", ActionType.LOG);
     }
 }

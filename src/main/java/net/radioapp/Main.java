@@ -3,6 +3,9 @@ package net.radioapp;
 import net.radioapp.commandController.actions.Action;
 import net.radioapp.commandController.actions.ActionType;
 import net.radioapp.commandController.TerminalHandler;
+import net.radioapp.commandController.commands.LockFrecuency;
+import net.radioapp.commandController.commands.LockOnOff;
+import net.radioapp.commandController.commands.LockVolume;
 import net.radioapp.web.inputServer.Connectivity;
 
 public class Main {
@@ -28,11 +31,18 @@ public class Main {
     }
 
     public static void filterAction(Action action){
-        if (action.getType() == ActionType.LOG || action.getType() == ActionType.SET){manejador.log(action.getRes());}
+        if (action.getType() == ActionType.LOG){manejador.log(action.getRes());}
         else if (action.getType() == ActionType.ERROR){manejador.error(action.getRes());}
         else if (action.getType() == ActionType.QUIT){manejador.exit(action.getRes());}
         else if (action.getType() == ActionType.HELP){manejador.log(getHelpCommands());}
         else if (action.getType() == ActionType.HELPARG){manejador.log(getHelpCommands(action.getRes()));}
+        else if (action.getType() == ActionType.SET){filterSetters(action); manejador.log(action.getRes());}
+    }
+
+    public static void filterSetters(Action action){
+        if (action.getName().equals(new LockFrecuency().getName())){Main.setLockedFrecuency(!Main.isLockedFrecuency());}
+        else if (action.getName().equals(new LockOnOff().getName())){Main.setLockedOn(!Main.isLockedOn());}
+        else if (action.getName().equals(new LockVolume().getName())){Main.setLockedVolume(!Main.isLockedVolume());}
     }
 
     public static String getHelpCommands(){

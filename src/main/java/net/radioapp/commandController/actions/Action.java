@@ -1,10 +1,11 @@
 package net.radioapp.commandController.actions;
 
 public class Action {
-    private final String res;
+    private final String res, name;
     private final ActionType type;
 
-    public Action(String r, ActionType t){
+    public Action(String n, String r, ActionType t){
+        name = n;
         res = r;
         type = t;
     }
@@ -12,4 +13,8 @@ public class Action {
     public String getRes() {return res;}
 
     public ActionType getType() {return type;}
+
+    public String getName() {
+        return name;
+    }
 }
