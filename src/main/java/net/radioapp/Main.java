@@ -6,19 +6,25 @@ import net.radioapp.commandController.TerminalHandler;
 import net.radioapp.commandController.commands.LockFrecuency;
 import net.radioapp.commandController.commands.LockOnOff;
 import net.radioapp.commandController.commands.LockVolume;
+import net.radioapp.web.UDP.NetHandler;
 import net.radioapp.web.inputServer.Connectivity;
+
+import java.io.IOException;
 
 public class Main {
     private static final InputHandler manejador = new TerminalHandler();
+    private static final WebHandler net = new NetHandler();
     private static Connectivity connectivityMode = Connectivity.NEVER;
 
     private static boolean emitting, lockedOn, lockedVolume, lockedFrecuency;
     private static String emittingGroup;
 
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
         manejador.initialize();
+        net.initialize();
         manejador.start();
+        net.start();
         start();
     }
 

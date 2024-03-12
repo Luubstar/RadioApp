@@ -29,7 +29,7 @@ public class CommandController {
     public Action call(String s, String[] args){
         Command r = findClosestCommand(s);
         if (r != null){return r.call(args);}
-        else{return  new Action("No se encontró el comando " + s, ActionType.ERROR);}
+        else{return  new Action("No se encontró el comando " + s, "error", ActionType.ERROR);}
     }
 
     public String getHelpCommands(){

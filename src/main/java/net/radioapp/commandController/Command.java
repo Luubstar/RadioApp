@@ -6,7 +6,7 @@ import net.radioapp.commandController.actions.ActionType;
 public abstract class Command {
     protected String name, description, helpMessage, resumeMessage, resultMessage;
     protected String[] aliases = new String[0];
-    public Action call(String[] args){return new Action("Acción no implementada", ActionType.LOG);}
+    public Action call(String[] args){return new Action("Acción no implementada", "error", ActionType.LOG);}
     public String getName() {return name;}
     public String[] getAliases() {return aliases;}
     public String[] getAliasesAndName(){
