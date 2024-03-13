@@ -2,7 +2,7 @@ package net.radioapp.web.emisor;
 
 public class Emisora {
     private final String name;
-    private final double frecuency;
+    private double frecuency;
 
     public Emisora(String name, double frecuency) {
         this.name = name;
@@ -15,5 +15,9 @@ public class Emisora {
 
     public double getFrecuency() {
         return frecuency;
+    }
+
+    public void setFrecuency(double frecuency) {
+        this.frecuency = frecuency;
     }
 }

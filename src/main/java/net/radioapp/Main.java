@@ -36,6 +36,7 @@ public class Main {
         }
     }
 
+    //TODO: mover a una clase aparte
     public static void filterAction(Action action){
         if (action.getType() == ActionType.LOG){manejador.log(action.getRes());}
         else if (action.getType() == ActionType.ERROR){manejador.error(action.getRes());}
