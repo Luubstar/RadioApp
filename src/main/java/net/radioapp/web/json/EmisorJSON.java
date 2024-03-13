@@ -9,6 +9,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 
 public class EmisorJSON {
+    public static final int EMISORVERSION = 1;
     public static void create(Path url, EmisorJSONObject obj) throws IOException {
         ObjectMapper mapper = new ObjectMapper();
         mapper.writeValue(url.toFile(), obj);

@@ -22,6 +22,7 @@ public class Main {
 
     public static void main(String[] args) throws IOException {
         manejador.initialize();
+        ActionHandler.start(manejador);
         net.initialize();
         manejador.start();
         net.start();
@@ -36,27 +37,14 @@ public class Main {
         }
     }
 
-    //TODO: mover a una clase aparte
-    public static void filterAction(Action action){
-        if (action.getType() == ActionType.LOG){manejador.log(action.getRes());}
-        else if (action.getType() == ActionType.ERROR){manejador.error(action.getRes());}
-        else if (action.getType() == ActionType.QUIT){manejador.exit(action.getRes());}
-        else if (action.getType() == ActionType.HELP){manejador.log(getHelpCommands());}
-        else if (action.getType() == ActionType.HELPARG){manejador.log(getHelpCommands(action.getRes()));}
-        else if (action.getType() == ActionType.SET){filterSetters(action); manejador.log(action.getRes());}
+    public static void filterAction(Action a){
+        if (a.getType() == ActionType.SET){filterSetters(a);}
+        else{ActionHandler.filterAction(a);}
     }
-
     public static void filterSetters(Action action){
         if (action.getName().equals(new LockFrecuency().getName())){Main.setLockedFrecuency(!Main.isLockedFrecuency());}
         else if (action.getName().equals(new LockOnOff().getName())){Main.setLockedOn(!Main.isLockedOn());}
         else if (action.getName().equals(new LockVolume().getName())){Main.setLockedVolume(!Main.isLockedVolume());}
-    }
-
-    public static String getHelpCommands(){
-        return manejador.getController().getHelpCommands();
-    }
-    public static String getHelpCommands(String s){
-        return manejador.getController().getHelpCommands(s);
     }
 
     public static Connectivity getConnectivityMode() {
