@@ -26,6 +26,7 @@ public class NetHandler implements WebHandler {
     private static List<Path> emisorasPaths = new ArrayList<>();
     private static List<Grupo> gruposList = new ArrayList<>();
     private static List<Emisora> emisorasList = new ArrayList<>();
+    private static Grupo grupoActual;
 
     @Override
     public void initialize() throws IOException{
@@ -50,6 +51,7 @@ public class NetHandler implements WebHandler {
             gruposList.add(g);
         }
 
+        grupoActual = gruposList.getFirst();
         for(Grupo g: gruposList){System.out.println(g.toString());}
     }
 
