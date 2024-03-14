@@ -1,5 +1,6 @@
 package net.radioapp.web.emisor;
 
+import net.radioapp.ActionHandler;
 import net.radioapp.Main;
 import net.radioapp.commandController.actions.Action;
 import net.radioapp.commandController.actions.ActionType;
@@ -8,16 +9,30 @@ import net.radioapp.web.json.EmisorJSONObject;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Stream;
 
 public class Emisora {
     private final String name;
     private final Path path;
     private double frecuency;
+    private List<File> ficheros = new ArrayList<>();
 
     public Emisora(String name, Path p) {
         this.path = p;
         this.name = name;
+        try{readFiles();}
+        catch (IOException e){
+            ActionHandler.filterAction(new Action("error", "Excepción de IO", ActionType.QUIT));
+        }
+    }
+
+    private void readFiles() throws IOException {
+        Stream<Path> files = Files.list(path);
+        files.filter(Files::isRegularFile).filter((e) -> !e.getFileName().toString().contains(".json")).forEach((e) -> {ficheros.add(e.toFile());});
     }
 
     private boolean hasConfigFile(){
@@ -49,5 +64,13 @@ public class Emisora {
 
     public void setFrecuency(double frecuency) {
         this.frecuency = frecuency;
+    }
+
+    public List<File> getFicheros() {
+        return ficheros;
+    }
+
+    public void setFicheros(List<File> ficheros) {
+        this.ficheros = ficheros;
     }
 }

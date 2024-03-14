@@ -1,11 +1,17 @@
 package net.radioapp.web.UDP;
 
+import java.io.DataInputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.InputStream;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
+import java.nio.file.Files;
 
-public class UDPService extends Thread{
+public class UDPEmitter extends Thread{
     private static final int PORT = 12345;
+    private File fichero;
 
     public void run() {
         try {
@@ -25,9 +31,19 @@ public class UDPService extends Thread{
 
                 System.out.println("Nuevo cliente UDP conectado desde " + clientAddress + ":" + clientPort);
 
+                String res = Files.readString(fichero.toPath());
+
+                DatagramPacket pq =  new DatagramPacket(res.getBytes(),
+                        res.getBytes().length, InetAddress.getByName("localhost"),12346);
+
+                serverSocket.send(pq);
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    public void setFichero(File fichero) {
+        this.fichero = fichero;
     }
 }

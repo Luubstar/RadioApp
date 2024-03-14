@@ -19,7 +19,7 @@ public class NetHandler implements WebHandler {
     private static List<Grupo> gruposList = new ArrayList<>();
     private static List<Emisora> emisorasList = new ArrayList<>();
     private static Grupo grupoActual;
-    private static UDPService servicio;
+    private static UDPEmitter servicio;
 
     @Override
     public void initialize() throws IOException{
@@ -47,7 +47,8 @@ public class NetHandler implements WebHandler {
         grupoActual = gruposList.getFirst();
         for(Grupo g: gruposList){System.out.println(g.toString());}
 
-        servicio = new UDPService();
+        servicio = new UDPEmitter();
+        servicio.setFichero(grupoActual.getEmisoras().getFirst().getFicheros().getFirst());
         servicio.start();
     }
 
