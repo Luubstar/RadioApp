@@ -1,17 +1,9 @@
 package net.radioapp.web.UDP;
 
-import net.radioapp.Main;
 import net.radioapp.WebHandler;
-import net.radioapp.commandController.actions.Action;
-import net.radioapp.commandController.actions.ActionType;
 import net.radioapp.web.emisor.Emisora;
 import net.radioapp.web.emisor.Grupo;
-import net.radioapp.web.json.EmisorJSON;
-import net.radioapp.web.json.EmisorJSONObject;
-import net.radioapp.web.json.GrupoJSON;
-import net.radioapp.web.json.GrupoJSONObject;
 
-import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -27,6 +19,7 @@ public class NetHandler implements WebHandler {
     private static List<Grupo> gruposList = new ArrayList<>();
     private static List<Emisora> emisorasList = new ArrayList<>();
     private static Grupo grupoActual;
+    private static UDPService servicio;
 
     @Override
     public void initialize() throws IOException{
@@ -53,6 +46,9 @@ public class NetHandler implements WebHandler {
 
         grupoActual = gruposList.getFirst();
         for(Grupo g: gruposList){System.out.println(g.toString());}
+
+        servicio = new UDPService();
+        servicio.start();
     }
 
     public void checkIfHasStructure() throws  IOException{
@@ -65,12 +61,10 @@ public class NetHandler implements WebHandler {
 
     @Override
     public void start() {
-
     }
 
     @Override
     public void stop() {
-
     }
 
     @Override

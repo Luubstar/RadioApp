@@ -4,10 +4,10 @@ import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 
-public class UPDService {
+public class UDPService extends Thread{
     private static final int PORT = 12345;
 
-    public static void main(String[] args) {
+    public void run() {
         try {
             DatagramSocket serverSocket = new DatagramSocket(PORT);
             System.out.println("Servidor UDP iniciado en el puerto " + PORT);
