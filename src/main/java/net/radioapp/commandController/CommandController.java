@@ -22,6 +22,9 @@ public class CommandController {
         register(new LockFrecuency());
         register(new LockVolume());
         register(new SetFrecuencyCommand());
+        register(new RestartCommand());
+        register(new StartCommand());
+        register(new StopCommand());
     }
 
     private void register(Command c){comandos.add(c);}

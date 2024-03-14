@@ -39,6 +39,7 @@ public class Main {
 
     public static void filterAction(Action a){
         if (a.getType() == ActionType.SET){filterSetters(a);}
+        if (a.getType() == ActionType.WEB){net.filterAction(a);}
         else{ActionHandler.filterAction(a);}
     }
     public static void filterSetters(Action action){

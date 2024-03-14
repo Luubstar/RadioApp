@@ -6,6 +6,7 @@ import java.util.List;
 
 public class ClientHandler {
     private static List<Client> clientes = new ArrayList<>();
+    private static boolean online;
 
     private static boolean checkIfContains(InetAddress address){
         for(Client c:clientes){
@@ -19,6 +20,10 @@ public class ClientHandler {
             Client c = new Client(address, 50);
             clientes.add(c);
         }
+    }
+
+    public static void setClientes(List<Client> clientes) {
+        ClientHandler.clientes = clientes;
     }
 
     private static Client getClient(InetAddress address){
@@ -41,5 +46,11 @@ public class ClientHandler {
         if (c.startsWith("move:")){c = c.split("move:")[1];} //TODO: Cambia frecuencia a cliente
     }
 
+    public static boolean isOnline() {
+        return online;
+    }
 
+    public static void setOnline(boolean online) {
+        ClientHandler.online = online;
+    }
 }

@@ -1,5 +1,7 @@
 package net.radioapp;
 
+import net.radioapp.commandController.actions.Action;
+
 import java.io.IOException;
 
 public interface WebHandler {
@@ -8,4 +10,5 @@ public interface WebHandler {
     void stop();
     void restart();
     void send();
+    void filterAction(Action action);
 }
