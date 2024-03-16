@@ -11,4 +11,5 @@ public interface WebHandler {
     void restart();
     void send();
     void filterAction(Action action);
+    void getState();
 }

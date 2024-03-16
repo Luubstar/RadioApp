@@ -40,6 +40,7 @@ public class Main {
     public static void filterAction(Action a){
         if (a.getType() == ActionType.SET){filterSetters(a);}
         if (a.getType() == ActionType.WEB){net.filterAction(a);}
+        if (a.getType() == ActionType.STATE){net.getState();}
         else{ActionHandler.filterAction(a);}
     }
     public static void filterSetters(Action action){

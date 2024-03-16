@@ -27,7 +27,6 @@ public class UDPRecibe extends Thread{
                 else {
                     try{
                     s.receive(pq);
-                    ClientHandler.addClient(pq.getAddress());
                     ClientHandler.filterCommand(new String(pq.getData(), StandardCharsets.UTF_8), pq.getAddress());
                     }
                     catch (SocketTimeoutException ignored){}

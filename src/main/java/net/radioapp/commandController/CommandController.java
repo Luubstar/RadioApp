@@ -25,6 +25,7 @@ public class CommandController {
         register(new RestartCommand());
         register(new StartCommand());
         register(new StopCommand());
+        register(new StateCommand());
     }
 
     private void register(Command c){comandos.add(c);}

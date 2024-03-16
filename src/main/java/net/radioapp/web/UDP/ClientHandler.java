@@ -1,5 +1,9 @@
 package net.radioapp.web.UDP;
 
+import net.radioapp.ActionHandler;
+import net.radioapp.commandController.actions.Action;
+import net.radioapp.commandController.actions.ActionType;
+
 import java.net.InetAddress;
 import java.util.ArrayList;
 import java.util.List;
@@ -15,11 +19,13 @@ public class ClientHandler {
         return false;
     }
 
-    public static void addClient(InetAddress address){
+    public static Client addClient(InetAddress address){
         if(!checkIfContains(address)){
             Client c = new Client(address, 50);
             clientes.add(c);
+            return  c;
         }
+        else{return getClient(address);}
     }
 
     public static void setClientes(List<Client> clientes) {
@@ -28,7 +34,7 @@ public class ClientHandler {
 
     private static Client getClient(InetAddress address){
         for(Client c:clientes){
-            if (c.getAddress() == address){return c;}
+            if (c.getAddress().equals(address)){return c;}
         }
         return null;
     }
@@ -38,12 +44,17 @@ public class ClientHandler {
         //TODO: Eliminar clientes que no manden paquetes en mucho tiempo
         c = c.toLowerCase();
         Client client = getClient(address);
-        if (client.isNew()){//TODO:Manda mensaje al cliente
+        if (client == null) {client = addClient(address);}
+
+        if (client.isNew()){
             client.turnNew();
-            System.out.println("Nuevo cliente conectado");//TODO: Mejorar el printeo
+            ActionHandler.filterAction(new Action("nuevo cliente", "Nuevo cliente conectado", ActionType.LOG));
             new UDPEmite("Conectado satisfactoriamente", address).start();
         }
-        if (c.startsWith("move:")){c = c.split("move:")[1];} //TODO: Cambia frecuencia a cliente
+        if (c.startsWith("move:")){
+            c = c.split("move:")[1];
+            client.setFrecuency(Double.parseDouble(c));
+        }
     }
 
     public static boolean isOnline() {
@@ -52,5 +63,9 @@ public class ClientHandler {
 
     public static void setOnline(boolean online) {
         ClientHandler.online = online;
+    }
+
+    public static List<Client> getClientes() {
+        return clientes;
     }
 }

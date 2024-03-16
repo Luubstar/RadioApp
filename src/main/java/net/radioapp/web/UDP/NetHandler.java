@@ -7,6 +7,7 @@ import net.radioapp.commandController.actions.ActionType;
 import net.radioapp.web.emisor.Emisora;
 import net.radioapp.web.emisor.Grupo;
 
+import net.radioapp.commandController.Colors;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -68,17 +69,17 @@ public class NetHandler implements WebHandler {
     public void start() {
         if(!ClientHandler.isOnline()){
         ClientHandler.setOnline(true);
-        ActionHandler.filterAction(new Action("start", "Sistema iniciado", ActionType.LOG));}
-        else {ActionHandler.filterAction(new Action("start error", "El sistema ya está iniciado", ActionType.LOG));}
+        ActionHandler.filterAction(new Action("start", Colors.Green.colorize("Sistema iniciado"), ActionType.LOG));}
+        else {ActionHandler.filterAction(new Action("start error", Colors.Red.colorize("El sistema ya está iniciado"), ActionType.LOG));}
     }
 
     @Override
     public void stop() {
         if (ClientHandler.isOnline()) {
             ClientHandler.setOnline(false);
-            ActionHandler.filterAction(new Action("stop", "Sistema parado", ActionType.LOG));
+            ActionHandler.filterAction(new Action("stop", Colors.Green.colorize("Sistema parado"), ActionType.LOG));
         }
-        else{ActionHandler.filterAction(new Action("stop error", "El sistema ya está parado", ActionType.LOG));}
+        else{ActionHandler.filterAction(new Action("stop error", Colors.Red.colorize("El sistema ya está parado"), ActionType.LOG));}
     }
 
     @Override
@@ -86,10 +87,10 @@ public class NetHandler implements WebHandler {
         ClientHandler.setOnline(false);
         recibidor.setCanRun(false);
         try{initialize();}
-        catch (Exception e){new Action("restart error", "Error reiniciando el sistema " + Arrays.toString(e.getStackTrace()), ActionType.QUIT);}
+        catch (Exception e){new Action("restart error", Colors.Red.colorize("Error reiniciando el sistema " + Arrays.toString(e.getStackTrace())), ActionType.QUIT);}
         ClientHandler.setClientes(new ArrayList<>());
         ClientHandler.setOnline(true);
-        ActionHandler.filterAction(new Action("restart", "Sistema reiniciado", ActionType.LOG));
+        ActionHandler.filterAction(new Action("restart", Colors.Green.colorize("Sistema reiniciado"), ActionType.LOG));
     }
 
     @Override
@@ -102,5 +103,15 @@ public class NetHandler implements WebHandler {
         if(action.getName().equalsIgnoreCase("start")){start();}
         if(action.getName().equalsIgnoreCase("stop")){stop();}
         if(action.getName().equalsIgnoreCase("restart")){restart();}
+    }
+
+    public void getState(){
+        StringBuilder r = new StringBuilder("Mostrando los clientes:\n");
+
+        for (Client c: ClientHandler.getClientes()){
+            r.append("> ").append(c.toString()).append("\n");
+        }
+
+        ActionHandler.filterAction(new Action("show clients", r.toString(), ActionType.LOG));
     }
 }

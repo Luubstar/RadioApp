@@ -11,13 +11,13 @@ import java.util.Arrays;
 
 public class ClientUDPEmite extends Thread{
     public static final int PORT = 7777;
+    String msg;
+    public  ClientUDPEmite(String msg){this.msg = msg;}
     public void run() {
         try {
-            //TODO: Conectar entrada de texto con esto
-            String message = "HELO";
             DatagramSocket server = new DatagramSocket();
-            DatagramPacket pq = new DatagramPacket(message.getBytes(),
-                    message.getBytes().length, InetAddress.getByName("localhost"), PORT);
+            DatagramPacket pq = new DatagramPacket(msg.getBytes(),
+                    msg.getBytes().length, InetAddress.getByName("localhost"), PORT);
             server.send(pq);
 
         } catch (Exception e) {

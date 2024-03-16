@@ -5,7 +5,7 @@ import java.net.InetAddress;
 public class Client {
     private InetAddress address;
     private double frecuency;
-    private boolean isNew;
+    private boolean isNew = false;
 
     //TODO: Aquí lo del tiempo
     public Client(InetAddress address, double frecuency) {
@@ -33,5 +33,10 @@ public class Client {
 
     public void setFrecuency(double frecuency) {
         this.frecuency = frecuency;
+    }
+
+    @Override
+    public String toString() {
+        return address + " -> " + frecuency + " MHz";
     }
 }
