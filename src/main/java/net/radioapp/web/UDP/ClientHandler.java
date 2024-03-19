@@ -21,7 +21,7 @@ public class ClientHandler {
 
     public static Client addClient(InetAddress address){
         if(!checkIfContains(address)){
-            Client c = new Client(address, 50);
+            Client c = new Client(address, 100);
             clientes.add(c);
             return  c;
         }
@@ -49,7 +49,7 @@ public class ClientHandler {
         if (client.isNew()){
             client.turnNew();
             ActionHandler.filterAction(new Action("nuevo cliente", "Nuevo cliente conectado", ActionType.LOG));
-            new UDPEmite("Conectado satisfactoriamente", address).start();
+            new UDPEmite("Conectado satisfactoriamente", client).start();
         }
         if (c.startsWith("move:")){
             c = c.split("move:")[1];

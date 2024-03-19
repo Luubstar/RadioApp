@@ -4,6 +4,7 @@ import net.radioapp.ActionHandler;
 import net.radioapp.WebHandler;
 import net.radioapp.commandController.actions.Action;
 import net.radioapp.commandController.actions.ActionType;
+import net.radioapp.web.emisor.Emision;
 import net.radioapp.web.emisor.Emisora;
 import net.radioapp.web.emisor.Grupo;
 
@@ -28,6 +29,7 @@ public class NetHandler implements WebHandler {
 
     @Override
     public void initialize() throws IOException{
+        //TODO: Configurar grupo actual y tal
         groupsPaths.clear();
         emisorasPaths.clear();
         gruposList.clear();
@@ -71,6 +73,10 @@ public class NetHandler implements WebHandler {
         ClientHandler.setOnline(true);
         ActionHandler.filterAction(new Action("start", Colors.Green.colorize("Sistema iniciado"), ActionType.LOG));}
         else {ActionHandler.filterAction(new Action("start error", Colors.Red.colorize("El sistema ya está iniciado"), ActionType.LOG));}
+
+        for (Emisora e : emisorasList){
+            new Emision(e).start();
+        }
     }
 
     @Override

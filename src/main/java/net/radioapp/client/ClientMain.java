@@ -1,10 +1,9 @@
 package net.radioapp.client;
 
 
-import java.io.*;
 import java.util.Scanner;
 
-public class clientMain {
+public class ClientMain {
 
     public static void main(String[] args) {
         new ClientUDPRecibe().start();

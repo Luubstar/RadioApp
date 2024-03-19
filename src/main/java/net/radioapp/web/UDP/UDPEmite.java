@@ -4,33 +4,26 @@ import net.radioapp.ActionHandler;
 import net.radioapp.commandController.actions.Action;
 import net.radioapp.commandController.actions.ActionType;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.InputStream;
-import java.net.DatagramPacket;
-import java.net.DatagramSocket;
-import java.net.InetAddress;
-import java.util.Arrays;
-
-public class UDPEmite extends Thread {
-    private static final int PORT = 7778;
+public class UDPEmite extends  UDPEmitterBase implements  Runnable{
     private final String message;
-    private final InetAddress address;
+    private final Client cliente;
 
-    public UDPEmite(String m, InetAddress address){
+    public UDPEmite(String m, Client cliente){
+        super();
         this.message = m;
-        this.address = address;
+        this.cliente = cliente;
+    }
+
+    @Override
+    public void start() {
+        new Thread()
     }
 
     public void run() {
         try {
-            DatagramSocket server = new DatagramSocket();
-            DatagramPacket pq = new DatagramPacket(message.getBytes(),
-                    message.getBytes().length, address, PORT);
-            server.send(pq);
-
+            super.send(message.getBytes(), cliente);
         } catch (Exception e) {
-            ActionHandler.filterAction(new Action("Error del servidor", "Error en el servidor UDP " + Arrays.toString(e.getStackTrace()), ActionType.QUIT));
+            ActionHandler.filterAction(new Action("", "Error emisor", ActionType.QUIT));
         }
     }
 
