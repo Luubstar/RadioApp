@@ -28,7 +28,6 @@ public class Emisora {
         catch (IOException e){
             ActionHandler.filterAction(new Action("error", "Excepción de IO", ActionType.QUIT));
         }
-        System.out.println("emisora en funcionamiento");
     }
 
     private void readFiles() throws IOException {

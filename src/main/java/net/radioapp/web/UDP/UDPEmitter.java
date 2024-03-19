@@ -12,20 +12,24 @@ import java.util.Arrays;
 public class UDPEmitter extends Thread{
     public DatagramSocket server;
     UDPPacket paquete;
+    public int port;
+    public int destino;
     public UDPEmitter(UDPPacket p){
         paquete = p;
+        port = UDPPacket.SERVEREMITTER;
+        destino = UDPPacket.CLIENTRECIBER;
     }
 
     private void connect(){
         boolean connected = false;
         while(!connected){
             try {
-                server = new DatagramSocket(UDPPacket.SERVEREMITTER);
+                server = new DatagramSocket(port);
                 connected = true;
             }
             catch (SocketException e){
 
-                System.out.println(Arrays.toString(e.getStackTrace()));
+                //System.out.println(Arrays.toString(e.getStackTrace()));
                 try{
                     Thread.sleep(100);
                 }catch (InterruptedException err){
@@ -38,7 +42,7 @@ public class UDPEmitter extends Thread{
 
     public void send(UDPPacket p) throws IOException {
         connect();
-        p.send(server, UDPPacket.CLIENTRECIBER);
+        p.send(server, destino);
         close();
     }
 

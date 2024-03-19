@@ -3,6 +3,7 @@ package net.radioapp.web.emisor;
 import net.radioapp.ActionHandler;
 import net.radioapp.commandController.actions.Action;
 import net.radioapp.commandController.actions.ActionType;
+import net.radioapp.web.UDP.PackageTypes;
 import net.radioapp.web.UDP.UDPEmitter;
 import net.radioapp.web.UDP.UDPPacket;
 import net.radioapp.web.netbasic.Client;
@@ -39,10 +40,12 @@ public class Emision extends Thread{
         return clientes;
     }
 
-    public void broadcast(byte[] b, List<Client> clientes){
+    public void broadcast(byte[] b, List<Client> clientes, PackageTypes t){
         List<UDPEmitter> lista = new ArrayList<>();
         for (Client c: clientes) {
-            UDPEmitter e = new UDPEmitter(new UDPPacket(c, b));
+            UDPEmitter e;
+            if (b.length != 0) {e = new UDPEmitter(new UDPPacket(c, b, t));}
+            else {e = new UDPEmitter(new UDPPacket(c, t));}
             e.start();
             lista.add(e);
         }
@@ -61,15 +64,14 @@ public class Emision extends Thread{
         List<Client> escuchas = getclients();
         System.out.println("Iniciando transmisión de archivos, peso " +emisora.getFicheros().getFirst().length() );
 
-        broadcast("start".getBytes(), escuchas);
+        broadcast(new byte[0], escuchas, PackageTypes.INICIOEMISION);
         try{
             File f = emisora.getFicheros().getFirst();
             FileInputStream fileInputStream = new FileInputStream(f);
             byte[] buffer = fileInputStream.readAllBytes();
 
-            broadcast(buffer, escuchas);
-
-            broadcast("stop".getBytes(), escuchas);
+            broadcast(buffer, escuchas, PackageTypes.EMISION);
+            broadcast(new byte[0], escuchas, PackageTypes.FINEMISION);
         }
         catch (IOException e){
             ActionHandler.filterAction(new Action("", "Error emisor " + Arrays.toString(e.getStackTrace()), ActionType.QUIT));

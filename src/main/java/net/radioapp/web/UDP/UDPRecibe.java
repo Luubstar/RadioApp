@@ -5,6 +5,8 @@ import net.radioapp.commandController.actions.Action;
 import net.radioapp.commandController.actions.ActionType;
 import net.radioapp.web.netbasic.ClientHandler;
 
+import javax.imageio.IIOException;
+import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.SocketException;
@@ -18,7 +20,6 @@ public class UDPRecibe extends Thread{
     public void run() {
         try {
             DatagramSocket s = new DatagramSocket(UDPPacket.SERVERRECIBER);
-            s.setSoTimeout(500);
             byte[] buffer = new byte[UDPPacket.CHUNKSIZE];
             DatagramPacket pq = new DatagramPacket(buffer, buffer.length);
             while (canRun) {
@@ -27,17 +28,20 @@ public class UDPRecibe extends Thread{
                 }
                 else {
                     try{
-                    s.receive(pq);
-                    ClientHandler.filterCommand(new String(pq.getData(), StandardCharsets.UTF_8), pq.getAddress());
+                        s.receive(pq);
+                        ClientHandler.filterCommand(pq.getData(), pq.getAddress());
+
+                        buffer = new byte[UDPPacket.CHUNKSIZE];
+                        pq = new DatagramPacket(buffer, buffer.length);
                     }
                     catch (SocketTimeoutException ignored){}
 
                 }
             }
         }
-        catch (SocketException ignored){}
-        catch (Exception e){
-            ActionHandler.filterAction(new Action("Error recibidor", "Error recibiendo paquetes " + Arrays.toString(e.getStackTrace()), ActionType.QUIT));
+        catch (SocketException | InterruptedException ignored){}
+        catch (IOException e){
+            ActionHandler.filterAction(new Action("Error recibidor", "Error recibiendo paquetes " + Arrays.toString(e.getStackTrace()) + " " + e.getCause(), ActionType.QUIT));
         }
     }
 

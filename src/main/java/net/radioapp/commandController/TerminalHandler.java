@@ -12,7 +12,7 @@ public class TerminalHandler implements InputHandler {
     Scanner Input;
     private final Colors exitColor = new Colors(Colors.TYPE_TEXT, 99, 99, 99);
     private final Colors errorColor = Colors.Red;
-    private static final String commandPrefix = "> ";
+    private static final String commandPrefix = "";
     @Override
     public void initialize() {
         controlador = new CommandController();
@@ -21,6 +21,7 @@ public class TerminalHandler implements InputHandler {
     }
     @Override
     public void start() {
+        System.out.println(commandPrefix);
         //TODO: Reactivar cuando sea necesario
         /*System.out.print("¿Qué modo de conectividad desea? [P]reguntar, [S]iempre, [N]unca\n"+commandPrefix);
         String res = Input.nextLine().toUpperCase();
@@ -49,12 +50,12 @@ public class TerminalHandler implements InputHandler {
 
     @Override
     public void log(String l) {
-        System.out.print(commandPrefix+l);
+        System.out.print(l + "\n" + commandPrefix);
     }
 
     @Override
     public void error(String l) {
-        System.out.print(errorColor.colorize(commandPrefix+l));
+        System.out.print(errorColor.colorize(l) + "\n" + commandPrefix);
     }
 
     @Override
