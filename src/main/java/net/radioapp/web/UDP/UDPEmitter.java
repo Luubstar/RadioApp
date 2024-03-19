@@ -7,7 +7,6 @@ import net.radioapp.commandController.actions.ActionType;
 import java.io.IOException;
 import java.net.DatagramSocket;
 import java.net.SocketException;
-import java.util.Arrays;
 
 public class UDPEmitter extends Thread{
     public DatagramSocket server;
@@ -29,7 +28,6 @@ public class UDPEmitter extends Thread{
             }
             catch (SocketException e){
 
-                //System.out.println(Arrays.toString(e.getStackTrace()));
                 try{
                     Thread.sleep(100);
                 }catch (InterruptedException err){

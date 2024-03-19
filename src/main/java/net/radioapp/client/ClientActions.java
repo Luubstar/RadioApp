@@ -32,6 +32,9 @@ public class ClientActions {
         else if (type == PackageTypes.LOG){
             System.out.println(command);
         }
+        else if (type == PackageTypes.MOVER){
+            System.out.println("Cambiando frecuencia a " + command);
+        }
         else{
             System.out.println("Algo ha fallado");
             System.out.println(type);

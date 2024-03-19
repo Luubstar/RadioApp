@@ -4,6 +4,9 @@ import net.radioapp.ActionHandler;
 import net.radioapp.WebHandler;
 import net.radioapp.commandController.actions.Action;
 import net.radioapp.commandController.actions.ActionType;
+import net.radioapp.web.UDP.PackageTypes;
+import net.radioapp.web.UDP.UDPEmitter;
+import net.radioapp.web.UDP.UDPPacket;
 import net.radioapp.web.UDP.UDPRecibe;
 import net.radioapp.web.emisor.Emision;
 import net.radioapp.web.emisor.Emisora;
@@ -101,8 +104,10 @@ public class NetHandler implements WebHandler {
     }
 
     @Override
-    public void send() {
-
+    public void send(PackageTypes t, String arg) {
+        for(Client c: ClientHandler.getClientes()){
+            new UDPEmitter(new UDPPacket(c, arg.getBytes(), t)).start();
+        }
     }
 
     @Override
@@ -110,6 +115,12 @@ public class NetHandler implements WebHandler {
         if(action.getName().equalsIgnoreCase("start")){start();}
         if(action.getName().equalsIgnoreCase("stop")){stop();}
         if(action.getName().equalsIgnoreCase("restart")){restart();}
+        if(action.getName().equalsIgnoreCase("setfrecuency")){
+            ClientHandler.moveAll(Double.parseDouble(action.getRes()));
+            send(PackageTypes.MOVER, action.getRes());
+            ActionHandler.filterAction(new Action("", "Todos los clientes han sido" +
+                    "cambiados a la frecuencia " + action.getRes(), ActionType.LOG));
+        }
     }
 
     public void getState(){

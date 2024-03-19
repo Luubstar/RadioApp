@@ -75,4 +75,10 @@ public class ClientHandler {
     public static List<Client> getClientes() {
         return clientes;
     }
+
+    public static void moveAll(double f){
+        for(Client c: getClientes()){
+            c.setFrecuency(f);
+        }
+    }
 }
