@@ -1,8 +1,10 @@
-package net.radioapp.web.UDP;
+package net.radioapp.web.netbasic;
 
 import net.radioapp.ActionHandler;
 import net.radioapp.commandController.actions.Action;
 import net.radioapp.commandController.actions.ActionType;
+import net.radioapp.web.UDP.UDPEmitter;
+import net.radioapp.web.UDP.UDPPacket;
 
 import java.net.InetAddress;
 import java.util.ArrayList;
@@ -49,7 +51,7 @@ public class ClientHandler {
         if (client.isNew()){
             client.turnNew();
             ActionHandler.filterAction(new Action("nuevo cliente", "Nuevo cliente conectado", ActionType.LOG));
-            new UDPEmite("Conectado satisfactoriamente", client).start();
+            new UDPEmitter(new UDPPacket(client,"Conectado satisfactoriamente".getBytes())).start();
         }
         if (c.startsWith("move:")){
             c = c.split("move:")[1];

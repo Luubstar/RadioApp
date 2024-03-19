@@ -1,9 +1,10 @@
-package net.radioapp.web.UDP;
+package net.radioapp.web.netbasic;
 
 import net.radioapp.ActionHandler;
 import net.radioapp.WebHandler;
 import net.radioapp.commandController.actions.Action;
 import net.radioapp.commandController.actions.ActionType;
+import net.radioapp.web.UDP.UDPRecibe;
 import net.radioapp.web.emisor.Emision;
 import net.radioapp.web.emisor.Emisora;
 import net.radioapp.web.emisor.Grupo;
@@ -54,7 +55,7 @@ public class NetHandler implements WebHandler {
             g.readConfigFile();
             gruposList.add(g);
         }
-        grupoActual = gruposList.getFirst();
+        grupoActual = gruposList.get(0);
         recibidor = new UDPRecibe();
         recibidor.start();
     }

@@ -1,5 +1,7 @@
 package net.radioapp.client;
 
+import net.radioapp.web.UDP.UDPPacket;
+
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.nio.charset.StandardCharsets;
@@ -8,8 +10,8 @@ public class ClientUDPRecibe extends Thread{
     @Override
     public void run() {
         try {
-            DatagramSocket s = new DatagramSocket(7778);
-            byte[] buffer = new byte[2048];
+            DatagramSocket s = new DatagramSocket(UDPPacket.CLIENTRECIBER);
+            byte[] buffer = new byte[UDPPacket.CHUNKSIZE];
             DatagramPacket pq = new DatagramPacket(buffer, buffer.length);
             while (true) {
                 s.receive(pq);

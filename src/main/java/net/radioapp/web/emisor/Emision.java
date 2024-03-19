@@ -3,9 +3,8 @@ package net.radioapp.web.emisor;
 import net.radioapp.ActionHandler;
 import net.radioapp.commandController.actions.Action;
 import net.radioapp.commandController.actions.ActionType;
-import net.radioapp.web.UDP.Client;
-import net.radioapp.web.UDP.ClientHandler;
-import net.radioapp.web.UDP.UDPEmite;
+import net.radioapp.web.netbasic.Client;
+import net.radioapp.web.netbasic.ClientHandler;
 
 import java.io.File;
 import java.io.FileInputStream;

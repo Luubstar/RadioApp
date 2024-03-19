@@ -1,4 +1,4 @@
-package net.radioapp.web.UDP;
+package net.radioapp.web.netbasic;
 
 import java.net.InetAddress;
 
@@ -21,10 +21,6 @@ public class Client {
 
     public InetAddress getAddress() {
         return address;
-    }
-
-    public void setAddress(InetAddress address) {
-        this.address = address;
     }
 
     public double getFrecuency() {

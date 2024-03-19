@@ -3,6 +3,7 @@ package net.radioapp.web.UDP;
 import net.radioapp.ActionHandler;
 import net.radioapp.commandController.actions.Action;
 import net.radioapp.commandController.actions.ActionType;
+import net.radioapp.web.netbasic.ClientHandler;
 
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
@@ -16,9 +17,9 @@ public class UDPRecibe extends Thread{
     @Override
     public void run() {
         try {
-            DatagramSocket s = new DatagramSocket(7777);
+            DatagramSocket s = new DatagramSocket(UDPPacket.SERVERRECIBER);
             s.setSoTimeout(500);
-            byte[] buffer = new byte[2048];
+            byte[] buffer = new byte[UDPPacket.CHUNKSIZE];
             DatagramPacket pq = new DatagramPacket(buffer, buffer.length);
             while (canRun) {
                 if(!ClientHandler.isOnline()){

@@ -6,7 +6,7 @@ import net.radioapp.commandController.TerminalHandler;
 import net.radioapp.commandController.commands.LockFrecuency;
 import net.radioapp.commandController.commands.LockOnOff;
 import net.radioapp.commandController.commands.LockVolume;
-import net.radioapp.web.UDP.NetHandler;
+import net.radioapp.web.netbasic.NetHandler;
 import net.radioapp.web.inputServer.Connectivity;
 
 import java.io.IOException;
