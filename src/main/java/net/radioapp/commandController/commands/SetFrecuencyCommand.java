@@ -9,7 +9,7 @@ public class SetFrecuencyCommand extends Command {
         name = "setfrecuency";
         aliases = new String[]{"move"};
         resumeMessage = "Comando para asignar la frecuencia {arg} al clientes";
-        helpMessage = resumeMessage;
+        helpMessage = resultMessage +"\n {arg} -> Frecuencia objetivo";
     }
     @Override
     public Action call(String[] args) {

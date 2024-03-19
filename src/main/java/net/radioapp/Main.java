@@ -1,6 +1,7 @@
 package net.radioapp;
 
 import net.radioapp.commandController.actions.Action;
+import net.radioapp.commandController.actions.ActionHandler;
 import net.radioapp.commandController.actions.ActionType;
 import net.radioapp.commandController.TerminalHandler;
 import net.radioapp.commandController.commands.LockFrecuency;
@@ -38,6 +39,7 @@ public class Main {
     }
 
     public static void filterAction(Action a){
+        //TODO: switches
         if (a.getType() == ActionType.SET){filterSetters(a);}
         if (a.getType() == ActionType.WEB){net.filterAction(a);}
         if (a.getType() == ActionType.STATE){net.getState();}

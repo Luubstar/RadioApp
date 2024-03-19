@@ -1,6 +1,6 @@
 package net.radioapp.web.netbasic;
 
-import net.radioapp.ActionHandler;
+import net.radioapp.commandController.actions.ActionHandler;
 import net.radioapp.WebHandler;
 import net.radioapp.commandController.actions.Action;
 import net.radioapp.commandController.actions.ActionType;
@@ -112,9 +112,11 @@ public class NetHandler implements WebHandler {
 
     @Override
     public void filterAction(Action action) {
+        //TODO: Switch
         if(action.getName().equalsIgnoreCase("start")){start();}
         if(action.getName().equalsIgnoreCase("stop")){stop();}
         if(action.getName().equalsIgnoreCase("restart")){restart();}
+        if(action.getName().equalsIgnoreCase("say")){send(PackageTypes.LOG, action.getRes());}
         if(action.getName().equalsIgnoreCase("setfrecuency")){
             ClientHandler.moveAll(Double.parseDouble(action.getRes()));
             send(PackageTypes.MOVER, action.getRes());

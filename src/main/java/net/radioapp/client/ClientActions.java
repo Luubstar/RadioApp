@@ -16,6 +16,7 @@ public class ClientActions {
         System.arraycopy(c, 1, c, 0, c.length-1);
         String command = new String(c, StandardCharsets.UTF_8);
 
+        //TODO: Switch
         if(type == PackageTypes.INICIOEMISION){
             res = new File("test.mp3");
             fileStream = new FileOutputStream(res);

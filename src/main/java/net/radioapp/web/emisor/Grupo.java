@@ -1,6 +1,6 @@
 package net.radioapp.web.emisor;
 
-import net.radioapp.ActionHandler;
+import net.radioapp.commandController.actions.ActionHandler;
 import net.radioapp.commandController.actions.Action;
 import net.radioapp.commandController.actions.ActionType;
 import net.radioapp.web.json.GrupoJSON;

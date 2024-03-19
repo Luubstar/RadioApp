@@ -1,5 +1,6 @@
-package net.radioapp;
+package net.radioapp.commandController.actions;
 
+import net.radioapp.InputHandler;
 import net.radioapp.commandController.actions.Action;
 import net.radioapp.commandController.actions.ActionType;
 
@@ -11,6 +12,7 @@ public class ActionHandler {
         manejador = m;
     }
     public static void filterAction(Action action){
+        //TODO: Switch
         if (action.getType() == ActionType.LOG){manejador.log(action.getRes());}
         else if (action.getType() == ActionType.ERROR){manejador.error(action.getRes());}
         else if (action.getType() == ActionType.QUIT){manejador.exit(action.getRes());}

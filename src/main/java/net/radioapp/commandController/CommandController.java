@@ -16,8 +16,9 @@ public class CommandController {
     }
 
     private void start(){
-        register(new QuitCommand());
+        //TODO: Sistema para que lea .javas en vez de esto
         register(new HelpCommand());
+        register(new QuitCommand());
         register(new LockOnOff());
         register(new LockFrecuency());
         register(new LockVolume());
@@ -26,6 +27,7 @@ public class CommandController {
         register(new StartCommand());
         register(new StopCommand());
         register(new StateCommand());
+        register(new SayCommand());
     }
 
     private void register(Command c){comandos.add(c);}
