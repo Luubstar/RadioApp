@@ -3,6 +3,8 @@ package net.radioapp.web.emisor;
 import net.radioapp.ActionHandler;
 import net.radioapp.commandController.actions.Action;
 import net.radioapp.commandController.actions.ActionType;
+import net.radioapp.web.UDP.UDPEmitter;
+import net.radioapp.web.UDP.UDPPacket;
 import net.radioapp.web.netbasic.Client;
 import net.radioapp.web.netbasic.ClientHandler;
 
@@ -12,7 +14,9 @@ import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.SocketException;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 public class Emision extends Thread{
     Emisora emisora;
@@ -20,15 +24,11 @@ public class Emision extends Thread{
     public Emision(Emisora fuente){
         this.emisora = fuente;
     }
-
-    @Override
-    public void run() {
-        //TODO: Filtrar para que emita solo a los que están en su frecuencia
-
-        int escuchas = 0;
-        while (escuchas == 0){
+    public List<Client> getclients(){
+        List<Client> clientes = new ArrayList<>();
+        while (clientes.size() == 0){
             for(Client c : ClientHandler.getClientes()){
-                if (c.getFrecuency() == emisora.getFrecuency()){escuchas++;}
+                if (c.getFrecuency() == emisora.getFrecuency()){clientes.add(c);}
             }
             try {
                 Thread.sleep(100);
@@ -36,43 +36,42 @@ public class Emision extends Thread{
                 throw new RuntimeException(e);
             }
         }
-        System.out.println("Iniciando transmisión de archivos, peso " +emisora.getFicheros().getFirst().length() );
-        DatagramSocket s = null;
-        try {
-            s = new DatagramSocket();
-        } catch (SocketException e) {
-            throw new RuntimeException(e);
+        return clientes;
+    }
+
+    public void broadcast(byte[] b, List<Client> clientes){
+        List<UDPEmitter> lista = new ArrayList<>();
+        for (Client c: clientes) {
+            UDPEmitter e = new UDPEmitter(new UDPPacket(c, b));
+            e.start();
+            lista.add(e);
         }
         try{
-            while (!connected) {
-                try {
-                    s = new DatagramSocket(7777);
-                    connected = true;
-                } catch (SocketException e) {
-                    Thread.sleep(100);
-                }
-            }
+            for(UDPEmitter e: lista){e.join();}
+        }
+        catch (InterruptedException e){
+            ActionHandler.filterAction(new Action("", "Interrupcion en la espera del emisor", ActionType.QUIT));
+        }
+    }
+
+    @Override
+    public void run() {
+        //TODO: Filtrar para que emita solo a los que están en su frecuencia
+
+        List<Client> escuchas = getclients();
+        System.out.println("Iniciando transmisión de archivos, peso " +emisora.getFicheros().getFirst().length() );
+
+        broadcast("start".getBytes(), escuchas);
+        try{
             File f = emisora.getFicheros().getFirst();
             FileInputStream fileInputStream = new FileInputStream(f);
-            byte[] buffer = new byte[2048];
-            int bytesread;
+            byte[] buffer = fileInputStream.readAllBytes();
 
-            String request = "GET/";
-            byte[] requestBytes = request.getBytes();
-            System.arraycopy(requestBytes, 0, buffer, 0, requestBytes.length);
+            broadcast(buffer, escuchas);
 
-            bytesread = fileInputStream.read(buffer,requestBytes.length, buffer.length - requestBytes.length);
-            while(bytesread != -1) {
-                for (Client c : ClientHandler.getClientes()) {
-                    DatagramPacket p = new DatagramPacket(buffer, bytesread, c.getAddress(), 7777);
-                    s.send(p);
-                    buffer = new byte[2048];
-                    System.arraycopy(requestBytes, 0, buffer, 0, requestBytes.length);
-                    bytesread = fileInputStream.read(buffer,requestBytes.length, buffer.length - requestBytes.length);
-                }
-            }
+            broadcast("stop".getBytes(), escuchas);
         }
-        catch (IOException | InterruptedException e){
+        catch (IOException e){
             ActionHandler.filterAction(new Action("", "Error emisor " + Arrays.toString(e.getStackTrace()), ActionType.QUIT));
         }
     }

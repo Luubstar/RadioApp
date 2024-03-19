@@ -15,8 +15,9 @@ public class ClientUDPRecibe extends Thread{
             DatagramPacket pq = new DatagramPacket(buffer, buffer.length);
             while (true) {
                 s.receive(pq);
-                //TODO: Filtrar entre texto y audio
-                System.out.println(new String(pq.getData(), StandardCharsets.UTF_8));
+                ClientActions.filterAction(pq.getData());
+                buffer = new byte[UDPPacket.CHUNKSIZE];
+                pq = new DatagramPacket(buffer, buffer.length);
             }
         }
         catch (Exception e){
