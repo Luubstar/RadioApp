@@ -62,12 +62,16 @@ public class Emision extends Thread{
         System.out.println("Iniciando transmisión de archivos, peso " +emisora.getFicheros().getFirst().length() );
 
         broadcast(new byte[0], escuchas, PackageTypes.INICIOEMISION);
+        try {Thread.sleep(1);} catch (InterruptedException e) {throw new RuntimeException(e);}
+
         try{
             File f = emisora.getFicheros().getFirst();
             FileInputStream fileInputStream = new FileInputStream(f);
             byte[] buffer = fileInputStream.readAllBytes();
 
             broadcast(buffer, escuchas, PackageTypes.EMISION);
+
+            try {Thread.sleep(1);} catch (InterruptedException e) {throw new RuntimeException(e);}
             broadcast(new byte[0], escuchas, PackageTypes.FINEMISION);
         }
         catch (IOException e){

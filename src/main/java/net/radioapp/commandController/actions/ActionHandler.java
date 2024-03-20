@@ -12,12 +12,23 @@ public class ActionHandler {
         manejador = m;
     }
     public static void filterAction(Action action){
-        //TODO: Switch
-        if (action.getType() == ActionType.LOG){manejador.log(action.getRes());}
-        else if (action.getType() == ActionType.ERROR){manejador.error(action.getRes());}
-        else if (action.getType() == ActionType.QUIT){manejador.exit(action.getRes());}
-        else if (action.getType() == ActionType.HELP){manejador.log(getHelpCommands());}
-        else if (action.getType() == ActionType.HELPARG){manejador.log(getHelpCommands(action.getRes()));}
+        switch (action.getType()){
+            case LOG:
+                manejador.log(action.getRes());
+                break;
+            case ERROR:
+                manejador.error(action.getRes());
+                break;
+            case QUIT:
+                manejador.exit(action.getRes());
+                break;
+            case HELP:
+                manejador.log(getHelpCommands());
+                break;
+            case HELPARG:
+                manejador.log(getHelpCommands(action.getRes()));
+                break;
+        }
     }
 
     public static String getHelpCommands(){

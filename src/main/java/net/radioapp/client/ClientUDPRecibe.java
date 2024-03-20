@@ -7,6 +7,10 @@ import java.net.DatagramSocket;
 import java.nio.charset.StandardCharsets;
 
 public class ClientUDPRecibe extends Thread{
+    ClientActions acciones;
+    public ClientUDPRecibe(ClientActions a){
+        acciones = a;
+    }
     @Override
     public void run() {
         try {
@@ -15,12 +19,13 @@ public class ClientUDPRecibe extends Thread{
             DatagramPacket pq = new DatagramPacket(buffer, buffer.length);
             while (true) {
                 s.receive(pq);
-                ClientActions.filterAction(pq.getData());
+                acciones.addAction(pq.getData());
                 buffer = new byte[UDPPacket.CHUNKSIZE];
                 pq = new DatagramPacket(buffer, buffer.length);
             }
         }
         catch (Exception e){
+            e.printStackTrace();
         }
     }
 }

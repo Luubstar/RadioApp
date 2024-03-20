@@ -39,11 +39,20 @@ public class Main {
     }
 
     public static void filterAction(Action a){
-        //TODO: switches
-        if (a.getType() == ActionType.SET){filterSetters(a);}
-        if (a.getType() == ActionType.WEB){net.filterAction(a);}
-        if (a.getType() == ActionType.STATE){net.getState();}
-        else{ActionHandler.filterAction(a);}
+        switch (a.getType()) {
+            case ActionType.SET:
+                filterSetters(a);
+                break;
+            case ActionType.WEB:
+                net.filterAction(a);
+                break;
+            case ActionType.STATE:
+                net.getState();
+                break;
+            default:
+                ActionHandler.filterAction(a);
+                break;
+        }
     }
     public static void filterSetters(Action action){
         if (action.getName().equals(new LockFrecuency().getName())){Main.setLockedFrecuency(!Main.isLockedFrecuency());}
