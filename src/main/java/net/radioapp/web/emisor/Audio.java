@@ -20,8 +20,8 @@ public class Audio {
 
     public byte[] getSeconds(int start, int duration) throws IOException {
         FileInputStream stream = new FileInputStream(archivo);
-        stream.skip(start * bytespersecond);
-        byte[] buffer = new byte[duration * bytespersecond];
+        if(start * bytespersecond > 0){stream.skip((start * bytespersecond));}
+        byte[] buffer = new byte[(int) (duration * bytespersecond)];
         stream.read(buffer);
         return buffer;
     }

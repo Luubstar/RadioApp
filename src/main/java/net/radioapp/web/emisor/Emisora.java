@@ -47,9 +47,9 @@ public class Emisora {
         });
     }
 
-    public void addSeconds(int s){
+    public void addSeconds(float s){
         time += s;
-        float songduration = (float) actualTrack.getArchivo().length() / actualTrack.getBytespersecond();
+        int songduration = (int) actualTrack.getArchivo().length() / actualTrack.getBytespersecond();
         if(time >= songduration){
             time -= songduration;
             changeSong();

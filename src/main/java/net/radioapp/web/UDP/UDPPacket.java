@@ -12,7 +12,7 @@ public class UDPPacket {
     public static final int SERVERRECIBER = 7777;
     public static final int CLIENTEMITTER = 7776;
     public static final int CLIENTRECIBER = 7779;
-    public static final int CHUNKSIZE = 2048;
+    public static final int CHUNKSIZE = 1024;
 
     Client cliente;
     byte[][] buffer;
