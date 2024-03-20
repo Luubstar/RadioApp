@@ -19,7 +19,7 @@ public class ClientUDPRecibe extends Thread{
             DatagramPacket pq = new DatagramPacket(buffer, buffer.length);
             while (true) {
                 s.receive(pq);
-                acciones.addAction(pq.getData());
+                if (pq.getData().length > 0){acciones.addAction(pq.getData());}
                 buffer = new byte[UDPPacket.CHUNKSIZE];
                 pq = new DatagramPacket(buffer, buffer.length);
             }

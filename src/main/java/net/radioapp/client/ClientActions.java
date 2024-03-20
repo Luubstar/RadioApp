@@ -12,11 +12,9 @@ import java.util.Queue;
 
 public class ClientActions extends Thread{
     Queue<byte[]> acciones = new LinkedList<>();
-    static boolean recording;
-    static ByteArrayOutputStream fileStream;
     ClientPlayer p;
 
-    public ClientActions(){
+    public ClientActions() {
         this.p = new ClientPlayer();
         p.play();
     }
@@ -24,32 +22,35 @@ public class ClientActions extends Thread{
     public void addAction(byte[] e){acciones.add(e);}
 
     public void filterAction(byte[] c) throws IOException, UnsupportedAudioFileException, LineUnavailableException, InterruptedException {
-        PackageTypes type = PackageTypes.obtenerTipoPorCodigo(c[0]);
+        try {
+            PackageTypes type = PackageTypes.obtenerTipoPorCodigo(c[0]);
 
-        System.arraycopy(c, 1, c, 0, c.length-1);
-        String command = new String(c, StandardCharsets.UTF_8);
-        switch (type){
-            case INICIOEMISION:
-                System.out.println("Recibiendo canción");
-                break;
-            case FINEMISION:
-                System.out.println("finalizado");
-                p.play();
-                break;
-            case EMISION:
-                p.addToPlay(c);
-                break;
-            case MOVER:
-                System.out.println("Cambiando frecuencia a " + command);
-                break;
-            case LOG:
-                System.out.println(command);
-                break;
-            default:
-                System.out.println("Algo ha fallado");
-                System.out.println(type);
-                break;
+            System.arraycopy(c, 1, c, 0, c.length - 1);
+            String command = new String(c, StandardCharsets.UTF_8);
+            switch (type) {
+                case INICIOEMISION:
+                    System.out.println("Recibiendo canción");
+                    break;
+                case FINEMISION:
+                    System.out.println("finalizado");
+                    p.play();
+                    break;
+                case EMISION:
+                    p.addToPlay(c);
+                    break;
+                case MOVER:
+                    System.out.println("Cambiando frecuencia a " + command);
+                    break;
+                case LOG:
+                    System.out.println(command);
+                    break;
+                default:
+                    System.out.println("Algo ha fallado");
+                    System.out.println(type);
+                    break;
+            }
         }
+        catch (Exception e){e.printStackTrace(); System.out.println(e.getMessage()); throw new RuntimeException();}
     }
 
     @Override
@@ -57,7 +58,8 @@ public class ClientActions extends Thread{
         while (true) {
             if (!acciones.isEmpty()) {
                 try {
-                    filterAction(acciones.poll());
+                    if(acciones.peek() != null) {filterAction(acciones.poll());}
+                    else{acciones.poll();}
                 } catch (IOException e) {
                     throw new RuntimeException(e);
                 } catch (UnsupportedAudioFileException e) {
