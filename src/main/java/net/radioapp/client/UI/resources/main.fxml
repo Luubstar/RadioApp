@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.ProgressIndicator?>
+<?import javafx.scene.layout.HBox?>
+
+
+<HBox alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="267.0" prefWidth="448.0" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <ProgressIndicator prefHeight="342.0" prefWidth="318.0" progress="0.0">
+         <padding>
+            <Insets left="50.0" right="50.0" />
+         </padding>
+      </ProgressIndicator>
+      <ProgressIndicator prefHeight="170.0" prefWidth="234.0" progress="0.0">
+         <padding>
+            <Insets left="50.0" right="50.0" />
+         </padding>
+      </ProgressIndicator>
+   </children>
+</HBox>

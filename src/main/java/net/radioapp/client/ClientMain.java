@@ -6,12 +6,12 @@ import net.radioapp.web.UDP.UDPPacket;
 import net.radioapp.web.netbasic.Client;
 
 import java.net.InetAddress;
-import java.net.UnknownHostException;
 import java.util.Scanner;
+import net.radioapp.client.UI.UIApp;
 
 public class ClientMain {
 
-    public static void main(String[] args) throws UnknownHostException {
+    public static void main(String[] args) throws Exception {
         new ClientUDPRecibe().start();
         Client c = new Client(InetAddress.getByName("127.0.0.1"), 0);
         new ClientUDPEmite(new UDPPacket(c,PackageTypes.HELO)).start();

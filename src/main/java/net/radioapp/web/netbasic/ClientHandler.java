@@ -60,6 +60,7 @@ public class ClientHandler {
             new UDPEmitter(new UDPPacket(client,"Conectado satisfactoriamente".getBytes(), PackageTypes.LOG)).start();
         }
         if (type == PackageTypes.MOVER){
+            command = command.split("move: ")[0];
             client.setFrecuency(Double.parseDouble(command));
         }
     }
