@@ -25,7 +25,7 @@ public class ClientPlayer extends  Thread{
             while (true) {
                 line.write(data.toByteArray(), 0, data.toByteArray().length);
                 data.reset();
-                line.flush();
+                line.drain();
             }
 
         } catch (LineUnavailableException e) {
