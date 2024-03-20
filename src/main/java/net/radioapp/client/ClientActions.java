@@ -37,7 +37,7 @@ public class ClientActions extends Thread{
                 recording = false;
                 fileStream.close();
                 System.out.println("finalizado, peso total " + res.length());
-                ClientPlayer.play(res);
+                ClientPlayer.play(new FileInputStream(res).readAllBytes());
                 break;
             case EMISION:
                 if (!recording) break;

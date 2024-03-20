@@ -7,6 +7,7 @@ import net.radioapp.commandController.actions.ActionType;
 import net.radioapp.web.json.EmisorJSON;
 import net.radioapp.web.json.EmisorJSONObject;
 
+import javax.sound.sampled.UnsupportedAudioFileException;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -19,12 +20,17 @@ public class Emisora {
     private final String name;
     private final Path path;
     private double frecuency;
-    private List<File> ficheros = new ArrayList<>();
+    private List<Audio> ficheros = new ArrayList<>();
+    private Audio actualTrack;
+    private float time;
 
     public Emisora(String name, Path p) {
         this.path = p;
         this.name = name;
-        try{readFiles();}
+        try{
+            readFiles();
+            actualTrack = ficheros.getFirst();
+        }
         catch (IOException e){
             ActionHandler.filterAction(new Action("error", "Excepción de IO", ActionType.QUIT));
         }
@@ -32,7 +38,41 @@ public class Emisora {
 
     private void readFiles() throws IOException {
         Stream<Path> files = Files.list(path);
-        files.filter(Files::isRegularFile).filter((e) -> !e.getFileName().toString().contains(".json")).forEach((e) -> {ficheros.add(e.toFile());});
+        files.filter(Files::isRegularFile).filter((e) -> !e.getFileName().toString().contains(".json")).forEach((e) ->
+        {
+            try {
+                ficheros.add(new Audio(e.toFile()));} catch (UnsupportedAudioFileException | IOException ex) {
+                throw new RuntimeException(ex);
+            }
+        });
+    }
+
+    public void addSeconds(int s){
+        time += s;
+        float songduration = (float) actualTrack.getArchivo().length() / actualTrack.getBytespersecond();
+        if(time >= songduration){
+            time -= songduration;
+            changeSong();
+            addSeconds(0);
+        }
+    }
+
+    private void changeSong(){
+        //TODO: Cambiar de pista
+        actualTrack = ficheros.getFirst();
+    }
+
+    public byte[] getSecondsFromAudio(int seconds) throws IOException {
+        byte[] buffer = actualTrack.getSeconds((int) time, seconds);
+        if (buffer.length < actualTrack.getBytespersecond() * seconds){
+            changeSong();
+            byte[] aux = getSecondsFromAudio(seconds);
+            byte[] res = new byte[aux.length + buffer.length];
+            System.arraycopy(buffer,0,buffer,0,buffer.length);
+            System.arraycopy(aux,0, res, buffer.length,res.length);
+            return res;
+        }
+        return buffer;
     }
 
     private boolean hasConfigFile(){
@@ -66,11 +106,11 @@ public class Emisora {
         this.frecuency = frecuency;
     }
 
-    public List<File> getFicheros() {
+    public List<Audio> getFicheros() {
         return ficheros;
     }
 
-    public void setFicheros(List<File> ficheros) {
+    public void setFicheros(List<Audio> ficheros) {
         this.ficheros = ficheros;
     }
 }

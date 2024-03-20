@@ -17,14 +17,15 @@ import java.util.Arrays;
 import java.util.List;
 
 public class Emision extends Thread{
+    private final int SECONDSFOREMISSION = 3;
     Emisora emisora;
-    boolean connected = false;
+    public boolean connected = true;
     public Emision(Emisora fuente){
         this.emisora = fuente;
     }
     public List<Client> getclients(){
         List<Client> clientes = new ArrayList<>();
-        while (clientes.size() == 0){
+        while (clientes.isEmpty()){
             for(Client c : ClientHandler.getClientes()){
                 if (c.getFrecuency() == emisora.getFrecuency()){clientes.add(c);}
             }
@@ -56,26 +57,35 @@ public class Emision extends Thread{
 
     @Override
     public void run() {
-        //TODO: Filtrar para que emita solo a los que están en su frecuencia
+        while (connected){
+            long stime = System.nanoTime();
+            List<Client> escuchas = getclients();
 
-        List<Client> escuchas = getclients();
-        System.out.println("Iniciando transmisión de archivos, peso " +emisora.getFicheros().getFirst().length() );
-
-        broadcast(new byte[0], escuchas, PackageTypes.INICIOEMISION);
-        try {Thread.sleep(1);} catch (InterruptedException e) {throw new RuntimeException(e);}
-
-        try{
-            File f = emisora.getFicheros().getFirst();
-            FileInputStream fileInputStream = new FileInputStream(f);
-            byte[] buffer = fileInputStream.readAllBytes();
-
-            broadcast(buffer, escuchas, PackageTypes.EMISION);
-
+            broadcast(new byte[0], escuchas, PackageTypes.INICIOEMISION);
             try {Thread.sleep(1);} catch (InterruptedException e) {throw new RuntimeException(e);}
-            broadcast(new byte[0], escuchas, PackageTypes.FINEMISION);
-        }
-        catch (IOException e){
-            ActionHandler.filterAction(new Action("", "Error emisor " + Arrays.toString(e.getStackTrace()), ActionType.QUIT));
+
+            try{
+                long etime = System.nanoTime();
+                int sdif = (int) (etime - stime)/1000000000;
+                emisora.addSeconds(sdif);
+
+                stime = System.nanoTime();
+                byte[] buffer = emisora.getSecondsFromAudio(SECONDSFOREMISSION);
+
+                broadcast(buffer, escuchas, PackageTypes.EMISION);
+
+                try {Thread.sleep(1);} catch (InterruptedException e) {throw new RuntimeException(e);}
+                broadcast(new byte[0], escuchas, PackageTypes.FINEMISION);
+                etime = System.nanoTime();
+
+                sdif = (int) (etime - stime)/1000000;
+                int res = SECONDSFOREMISSION-sdif;
+                if(res < 0){res = 0;}
+                try {Thread.sleep( res);} catch (InterruptedException e){throw new RuntimeException(e);}
+            }
+            catch (IOException e){
+                ActionHandler.filterAction(new Action("", "Error emisor " + Arrays.toString(e.getStackTrace()) + "\n" + e.getMessage(), ActionType.QUIT));
+            }
         }
     }
 }

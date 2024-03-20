@@ -13,9 +13,12 @@ public class ClientMain {
     public static void main(String[] args) throws Exception {
         ClientActions accion = new ClientActions();
         accion.start();
+
         new ClientUDPRecibe(accion).start();
+
         Client c = new Client(InetAddress.getByName("127.0.0.1"), 0);
         new ClientUDPEmite(new UDPPacket(c,PackageTypes.HELO)).start();
+
         Scanner s = new Scanner(System.in);
         while(true){
             String r = s.nextLine();
