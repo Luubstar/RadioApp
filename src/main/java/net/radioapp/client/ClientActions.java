@@ -68,13 +68,7 @@ public class ClientActions extends Thread{
                 try {
                     if(acciones.peek() != null) {filterAction(acciones.poll());}
                     else{acciones.poll();}
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
-                } catch (UnsupportedAudioFileException e) {
-                    throw new RuntimeException(e);
-                } catch (LineUnavailableException e) {
-                    throw new RuntimeException(e);
-                } catch (InterruptedException e) {
+                } catch (IOException | UnsupportedAudioFileException | LineUnavailableException | InterruptedException e) {
                     throw new RuntimeException(e);
                 }
             } else {

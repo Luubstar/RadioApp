@@ -54,7 +54,7 @@ public class UDPPacket {
         }
     }
 
-    private byte[] shortIntoBytes(short valor) {
+    public static byte[] shortIntoBytes(short valor) {
         return ByteBuffer.allocate(2).putShort(valor).array();
     }
 
