@@ -1,7 +1,7 @@
 package net.radioapp.client;
 
-import net.radioapp.client.UI.ClientPlayer;
 import net.radioapp.web.UDP.PackageTypes;
+import net.radioapp.web.UDP.UDPPacket;
 
 import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.UnsupportedAudioFileException;
@@ -24,19 +24,27 @@ public class ClientActions extends Thread{
     public void filterAction(byte[] c) throws IOException, UnsupportedAudioFileException, LineUnavailableException, InterruptedException {
         try {
             PackageTypes type = PackageTypes.obtenerTipoPorCodigo(c[0]);
-
             System.arraycopy(c, 1, c, 0, c.length - 1);
+
+            byte[] num = new byte[2];
+            System.arraycopy(c, 1, num, 0, 2);
+            short pos = UDPPacket.bytesToShort(num);
+
+            System.arraycopy(c, 2, c, 0, c.length - 2);
             String command = new String(c, StandardCharsets.UTF_8);
+
+            System.out.println(pos);
             switch (type) {
                 case INICIOEMISION:
                     System.out.println("Recibiendo canción");
                     break;
                 case FINEMISION:
                     System.out.println("finalizado");
+                    p.collapse();
                     p.play();
                     break;
                 case EMISION:
-                    p.addToPlay(c);
+                    p.addToPlay(c, pos);
                     break;
                 case MOVER:
                     System.out.println("Cambiando frecuencia a " + command);

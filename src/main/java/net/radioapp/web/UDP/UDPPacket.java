@@ -5,7 +5,8 @@ import net.radioapp.web.netbasic.Client;
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
-import java.nio.charset.StandardCharsets;
+import java.nio.ByteBuffer;
+import java.util.Arrays;
 
 public class UDPPacket {
     public static final int SERVEREMITTER = 7778;
@@ -26,18 +27,21 @@ public class UDPPacket {
     public UDPPacket(Client c, PackageTypes type){
         cliente = c;
         this.type = type;
-        buffer  = slice("  ".getBytes());
+        buffer  = slice(new byte[]{0});
     }
 
     public byte[][] slice(byte[] b){
         int chunks = (int) Math.ceil((double) b.length / (CHUNKSIZE-1));
         byte[][] result = new byte[chunks][];
         int start = 0;
-        for (int i = 0; i < chunks; i++) {
+        for (short i = 0; i < chunks; i++) {
             int length = Math.min(CHUNKSIZE, b.length - start);
-            byte[] chunk = new byte[length + 1];
+            byte[] chunk = new byte[length + 3];
             chunk[0] = type.getBytevalue();
-            System.arraycopy(b, start, chunk, 1, length);
+            byte[] num = shortIntoBytes(i);
+            chunk[1] = num[0];
+            chunk[2] = num[1];
+            System.arraycopy(b, start, chunk, 3, length);
             result[i] = chunk;
             start += length;
         }
@@ -50,7 +54,11 @@ public class UDPPacket {
         }
     }
 
-    public byte[][] getBuffer() {
-        return buffer;
+    private byte[] shortIntoBytes(short valor) {
+        return ByteBuffer.allocate(2).putShort(valor).array();
+    }
+
+    public static short bytesToShort(byte[] bytes) {
+        return ByteBuffer.wrap(bytes).getShort();
     }
 }

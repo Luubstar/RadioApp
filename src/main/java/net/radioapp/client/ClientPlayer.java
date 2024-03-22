@@ -1,18 +1,36 @@
-package net.radioapp.client.UI;
+package net.radioapp.client;
 
 
 import javax.sound.sampled.*;
 import java.io.*;
+import java.util.Comparator;
+import java.util.PriorityQueue;
+import java.util.TreeMap;
 
 public class ClientPlayer extends  Thread{
     SourceDataLine line;
     ByteArrayOutputStream data = new ByteArrayOutputStream();
+    TreeMap<Short, byte[]> entrada = new TreeMap<>();
     public static boolean running;
     private boolean reading;
-    public synchronized void addToPlay(byte[] stream) throws IOException, InterruptedException {
+
+    public ClientPlayer(){
+
+    }
+    public synchronized void addToPlay(byte[] stream, short pos) throws IOException, InterruptedException {
         while (reading){Thread.sleep(1);}
         reading = true;
-        data.write(stream);
+        if(entrada.containsKey(pos)){collapse();}
+        entrada.put(pos, stream);
+        reading = false;
+    }
+    public synchronized void collapse() throws InterruptedException, IOException {
+        while (reading){Thread.sleep(1);}
+        reading = true;
+        while(!entrada.isEmpty()){
+            data.write(entrada.pollFirstEntry().getValue());
+        }
+        entrada.clear();
         reading = false;
     }
     public void play(){
