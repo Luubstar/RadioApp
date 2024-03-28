@@ -50,7 +50,7 @@ public class ClientPlayer extends  Thread{
         int sampleSizeInBits = 16;  // Ejemplo: 16 bits
         int channels = 2;           // Ejemplo: 2 canales (estéreo)
         boolean signed = true;      // Ejemplo: formato signed
-        boolean bigEndian = false;  // Ejemplo: little-endian
+        boolean bigEndian = false;  // Ejemplo: little-endian 
 
         return new AudioFormat(sampleRate, sampleSizeInBits, channels, signed, bigEndian);
     }
