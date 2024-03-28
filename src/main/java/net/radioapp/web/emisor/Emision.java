@@ -15,7 +15,7 @@ import java.util.Arrays;
 import java.util.List;
 
 public class Emision extends Thread{
-    private final int SECONDSFOREMISSION = 3;
+    private final int SECONDSFOREMISSION = 5;
     private final int AJUSTE = 10000;
     Emisora emisora;
     public boolean connected = true;

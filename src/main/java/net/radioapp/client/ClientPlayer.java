@@ -49,6 +49,9 @@ public class ClientPlayer extends  Thread{
                 if (data.size() > 0) {
                     while (reading){Thread.sleep(1);}
                     reading = true;
+                    //TODO: HAY QUE IR CON CUIDADO CON QUE LA ESCRITURA NO SEA MODULO 4
+                    // TIENE UN PARCHE TEMPORAL
+                    while(data.toByteArray().length % 4 != 0){data.write(0);}
                     line.write(data.toByteArray(), 0, data.toByteArray().length);
                     data.reset();
                     line.drain();
