@@ -35,6 +35,7 @@ public class UDPPacket {
         for (int i = 0; i < chunks; i++) {
             int length = Math.min(CHUNKSIZE, b.length - start + METADATASIZE);
             UDPDataArray message = new UDPDataArray(length);
+            //TODO: Metodo para añadir metadatos diferentes según el tipo del paquete
             message.addData(new byte[]{type.getBytevalue()});
             message.addData(new byte[]{0,0,0,0});
             message.addData(b,start,start + (length-1-METADATASIZE));

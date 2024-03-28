@@ -38,4 +38,6 @@ public class UDPDataArray {
     public PackageTypes getType(){return PackageTypes.obtenerTipoPorCodigo(data[0]);}
     public int getEndIndex(){return data.length-1;}
     public byte[] getData(){return data;}
+
+
 }
