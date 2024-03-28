@@ -10,14 +10,14 @@ import java.util.TreeMap;
 public class ClientPlayer extends  Thread{
     SourceDataLine line;
     ByteArrayOutputStream data = new ByteArrayOutputStream();
-    TreeMap<Short, byte[]> entrada = new TreeMap<>();
+    TreeMap<Integer, byte[]> entrada = new TreeMap<>();
     public static boolean running;
     private boolean reading;
 
     public ClientPlayer(){
 
     }
-    public synchronized void addToPlay(byte[] stream, short pos) throws IOException, InterruptedException {
+    public synchronized void addToPlay(byte[] stream, int pos) throws IOException, InterruptedException {
         while (reading){Thread.sleep(1);}
         reading = true;
         if(entrada.containsKey(pos)){collapse();}

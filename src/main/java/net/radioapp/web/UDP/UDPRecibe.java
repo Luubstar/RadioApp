@@ -18,7 +18,7 @@ public class UDPRecibe extends Thread{
     public void run() {
         try {
             DatagramSocket s = new DatagramSocket(UDPPacket.SERVERRECIBER);
-            byte[] buffer = new byte[UDPPacket.CHUNKSIZE];
+            byte[] buffer = new byte[UDPDataArray.CHUNKSIZE];
             DatagramPacket pq = new DatagramPacket(buffer, buffer.length);
             while (canRun) {
                 if(!ClientHandler.isOnline()){
@@ -29,7 +29,7 @@ public class UDPRecibe extends Thread{
                         s.receive(pq);
                         ClientHandler.filterCommand(pq.getData(), pq.getAddress());
 
-                        buffer = new byte[UDPPacket.CHUNKSIZE];
+                        buffer = new byte[UDPDataArray.CHUNKSIZE];
                         pq = new DatagramPacket(buffer, buffer.length);
                     }
                     catch (SocketTimeoutException ignored){}

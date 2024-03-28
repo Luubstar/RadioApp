@@ -1,12 +1,14 @@
 package net.radioapp.client;
 
 import net.radioapp.web.UDP.PackageTypes;
+import net.radioapp.web.UDP.UDPDataArray;
 import net.radioapp.web.UDP.UDPPacket;
 
 import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.UnsupportedAudioFileException;
 import java.io.*;
 import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.Queue;
 
@@ -23,17 +25,14 @@ public class ClientActions extends Thread{
 
     public void filterAction(byte[] c) throws IOException, UnsupportedAudioFileException, LineUnavailableException, InterruptedException {
         try {
-            PackageTypes type = PackageTypes.obtenerTipoPorCodigo(c[0]);
-            System.arraycopy(c, 1, c, 0, c.length - 1);
+            UDPDataArray packet = new UDPDataArray(c);
+            PackageTypes type = packet.getType();
 
-            byte[] num = new byte[2];
-            System.arraycopy(c, 1, num, 0, 2);
-            short pos = UDPPacket.bytesToShort(num);
+            int pos = UDPDataArray.byteToInt(packet.getData(2,5));
 
-            System.arraycopy(c, 2, c, 0, c.length - 2);
+            c = packet.getData(UDPDataArray.METADATASIZE, UDPDataArray.CHUNKSIZE-1);
+
             String command = new String(c, StandardCharsets.UTF_8);
-
-            System.out.println(pos);
             switch (type) {
                 case INICIOEMISION:
                     System.out.println("Recibiendo canción");

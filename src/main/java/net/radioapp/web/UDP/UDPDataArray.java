@@ -1,8 +1,12 @@
 package net.radioapp.web.UDP;
 
+import java.nio.ByteBuffer;
+
 public class UDPDataArray {
     byte[] data;
     int editingPosition = 0;
+    public static final int CHUNKSIZE = 1024;
+    public static final int METADATASIZE = 5;
     public UDPDataArray(int size){
         data = new byte[size];
     }
@@ -10,12 +14,14 @@ public class UDPDataArray {
         this.data = data;
     }
 
+    public void addData(byte v){addData(new byte[]{v});}
+
     public void addData(byte[] values){
         for (byte value : values) {
             data[editingPosition] = value;
             editingPosition++;
         }
-        if (editingPosition > UDPPacket.CHUNKSIZE){
+        if (editingPosition > CHUNKSIZE){
             throw new RuntimeException("El tamaño de un paquete ha superado el esperado. Revisa el tamaño de los metadatos");
         }
     }
@@ -25,7 +31,7 @@ public class UDPDataArray {
             data[editingPosition] = values[i];
             editingPosition++;
         }
-        if (editingPosition > UDPPacket.CHUNKSIZE){
+        if (editingPosition > CHUNKSIZE){
             throw new RuntimeException("El tamaño de un paquete ha superado el esperado. Revisa el tamaño de los metadatos");
         }
     }
@@ -39,5 +45,12 @@ public class UDPDataArray {
     public int getEndIndex(){return data.length-1;}
     public byte[] getData(){return data;}
 
+    public static int byteToInt(byte[] c){
+        return ByteBuffer.wrap(c).getInt();
+    }
+
+    public static byte[] intToByte(int c){
+        return ByteBuffer.allocate(4).putInt(c).array();
+    }
 
 }
