@@ -60,7 +60,7 @@ public class ClientHandler {
 
         if (type.equals(PackageTypes.HELO) || client.isNew()){
             client.turnNew();
-            ActionHandler.filterAction(new Action("nuevo cliente", "Nuevo cliente conectado", ActionType.LOG));
+            ActionHandler.log("Nuevo cliente conectado");
             new UDPEmitter(new UDPPacket(client,"Conectado satisfactoriamente".getBytes(), PackageTypes.LOG)).start();
         }
         else if (type.equals(PackageTypes.MOVER)){

@@ -75,8 +75,8 @@ public class NetHandler implements WebHandler {
     public void start() {
         if(!ClientHandler.isOnline()){
         ClientHandler.setOnline(true);
-        ActionHandler.filterAction(new Action("start", Colors.Green.colorize("Sistema iniciado"), ActionType.LOG));}
-        else {ActionHandler.filterAction(new Action("start error", Colors.Red.colorize("El sistema ya está iniciado"), ActionType.LOG));}
+        ActionHandler.log(Colors.Green.colorize("Sistema iniciado"));}
+        else {ActionHandler.log(Colors.Red.colorize("El sistema ya está iniciado"));}
 
         for (Emisora e : emisorasList){
             new Emision(e).start();
@@ -87,9 +87,9 @@ public class NetHandler implements WebHandler {
     public void stop() {
         if (ClientHandler.isOnline()) {
             ClientHandler.setOnline(false);
-            ActionHandler.filterAction(new Action("stop", Colors.Green.colorize("Sistema parado"), ActionType.LOG));
+            ActionHandler.log(Colors.Green.colorize("Sistema parado"));
         }
-        else{ActionHandler.filterAction(new Action("stop error", Colors.Red.colorize("El sistema ya está parado"), ActionType.LOG));}
+        else{ActionHandler.log(Colors.Red.colorize("El sistema ya está parado"));}
     }
 
     @Override
@@ -97,10 +97,10 @@ public class NetHandler implements WebHandler {
         ClientHandler.setOnline(false);
         recibidor.setCanRun(false);
         try{initialize();}
-        catch (Exception e){new Action("restart error", Colors.Red.colorize("Error reiniciando el sistema " + Arrays.toString(e.getStackTrace())), ActionType.QUIT);}
+        catch (Exception e){ActionHandler.handleException(e);}
         ClientHandler.setClientes(new ArrayList<>());
         ClientHandler.setOnline(true);
-        ActionHandler.filterAction(new Action("restart", Colors.Green.colorize("Sistema reiniciado"), ActionType.LOG));
+        ActionHandler.log(Colors.Green.colorize("Sistema reiniciado"));
     }
 
     @Override
@@ -140,6 +140,6 @@ public class NetHandler implements WebHandler {
             r.append("> ").append(c.toString()).append("\n");
         }
 
-        ActionHandler.filterAction(new Action("show clients", r.toString(), ActionType.LOG));
+        ActionHandler.log(r.toString());
     }
 }
