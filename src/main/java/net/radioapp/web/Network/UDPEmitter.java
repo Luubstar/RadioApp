@@ -1,4 +1,4 @@
-package net.radioapp.web.UDP;
+package net.radioapp.web.Network;
 
 import net.radioapp.commandController.actions.ActionHandler;
 import net.radioapp.commandController.actions.Action;
@@ -8,7 +8,7 @@ import java.io.IOException;
 import java.net.DatagramSocket;
 import java.net.SocketException;
 
-public class UDPEmitter extends Thread{
+class UDPEmitter extends Thread{
     public DatagramSocket server;
     UDPPacket paquete;
     public int port;

@@ -1,11 +1,7 @@
-package net.radioapp.web.netbasic;
+package net.radioapp.web.Network;
 
 import net.radioapp.commandController.actions.ActionHandler;
-import net.radioapp.commandController.actions.Action;
-import net.radioapp.commandController.actions.ActionType;
-import net.radioapp.web.UDP.PackageTypes;
-import net.radioapp.web.UDP.UDPEmitter;
-import net.radioapp.web.UDP.UDPPacket;
+import net.radioapp.web.Client;
 
 import java.net.InetAddress;
 import java.nio.charset.StandardCharsets;
@@ -13,7 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ClientHandler {
-    protected static final int MAX_LOSTED_PINGS = 3;
+    public static final int MAX_LOSTED_PINGS = 3;
     private static List<Client> clientes = new ArrayList<>();
     private static boolean online;
 

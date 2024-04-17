@@ -1,14 +1,12 @@
-package net.radioapp.web.UDP;
+package net.radioapp.web.Network;
 
-import net.radioapp.web.netbasic.Client;
+import net.radioapp.web.Client;
 
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
-import java.nio.charset.StandardCharsets;
-import java.util.Arrays;
 
-public class UDPPacket {
+class UDPPacket {
     public static final int SERVEREMITTER = 7778;
     public static final int SERVERRECIBER = 7777;
     public static final int CLIENTEMITTER = 7776;

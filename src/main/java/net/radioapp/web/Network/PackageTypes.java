@@ -1,4 +1,4 @@
-package net.radioapp.web.UDP;
+package net.radioapp.web.Network;
 
 public enum PackageTypes {
     HELO(0),

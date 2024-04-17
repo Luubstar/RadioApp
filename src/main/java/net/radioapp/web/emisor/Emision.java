@@ -1,15 +1,13 @@
 package net.radioapp.web.emisor;
 
+import net.radioapp.Main;
 import net.radioapp.commandController.actions.ActionHandler;
 import net.radioapp.commandController.actions.Action;
 import net.radioapp.commandController.actions.ActionType;
-import net.radioapp.web.UDP.PackageTypes;
-import net.radioapp.web.UDP.UDPEmitter;
-import net.radioapp.web.UDP.UDPPacket;
-import net.radioapp.web.netbasic.Client;
-import net.radioapp.web.netbasic.ClientHandler;
+import net.radioapp.web.Network.PackageTypes;
+import net.radioapp.web.Client;
+import net.radioapp.web.Network.ClientHandler;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -40,7 +38,7 @@ public class Emision extends Thread{
         return clientes;
     }
 
-    public void broadcast(byte[] b, List<Client> clientes, PackageTypes t) {
+    /*public void broadcast(byte[] b, List<Client> clientes, PackageTypes t) {
         List<UDPEmitter> lista = new ArrayList<>();
         for (Client c: clientes) {
             UDPEmitter e;
@@ -50,6 +48,13 @@ public class Emision extends Thread{
             lista.add(e);
         }
         for(UDPEmitter a : lista){try {a.join();}catch (InterruptedException e){}}
+    }*/
+
+    //TODO: Testea bien este método nuevo
+    public void broadcast(byte[] b, List<Client> clientes, PackageTypes t) {
+        for (Client c: clientes) {
+            Main.send(c, t, b);
+        }
     }
 
     @Override

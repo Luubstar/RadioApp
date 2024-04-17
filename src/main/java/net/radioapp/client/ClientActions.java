@@ -1,16 +1,11 @@
 package net.radioapp.client;
-
-import net.radioapp.web.UDP.PackageTypes;
-import net.radioapp.web.UDP.UDPDataArray;
-import net.radioapp.web.UDP.UDPPacket;
-import net.radioapp.web.netbasic.Client;
+import net.radioapp.web.Network.PackageTypes;
+import net.radioapp.web.Network.UDPDataArray;
 
 import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.UnsupportedAudioFileException;
 import java.io.*;
-import java.net.InetAddress;
 import java.nio.charset.StandardCharsets;
-import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.Queue;
 
@@ -34,7 +29,7 @@ public class ClientActions extends Thread{
 
             c = packet.getData(UDPDataArray.METADATASIZE, UDPDataArray.CHUNKSIZE-1);
 
-            String command = new String(c, StandardCharsets.UTF_8);
+            String command = new String(c, StandardCharsets.UTF_8).trim();
             switch (type) {
                 case INICIOEMISION:
                     System.out.println("Recibiendo canción");
@@ -54,9 +49,8 @@ public class ClientActions extends Thread{
                     System.out.println(command);
                     break;
                 case PING:
-                    //TODO: Necesito un mejor sistema para mandar paquetes
                     System.out.println("Pingeando");
-                    new UDPPacket(new Client(InetAddress.getByName("127.0.0.1"),0), PackageTypes.PING);
+                    ClientNetHandler.send(new UDPDataArray(0), PackageTypes.PING);
                     break;
                 default:
                     System.out.println("Algo ha fallado");

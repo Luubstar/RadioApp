@@ -1,9 +1,8 @@
-package net.radioapp.web.UDP;
+package net.radioapp.web.Network;
 
 import net.radioapp.commandController.actions.ActionHandler;
 import net.radioapp.commandController.actions.Action;
 import net.radioapp.commandController.actions.ActionType;
-import net.radioapp.web.netbasic.ClientHandler;
 
 import java.io.IOException;
 import java.net.DatagramPacket;
@@ -12,7 +11,7 @@ import java.net.SocketException;
 import java.net.SocketTimeoutException;
 import java.util.Arrays;
 
-public class UDPRecibe extends Thread{
+class UDPRecibe extends Thread{
     private boolean canRun = true;
     @Override
     public void run() {

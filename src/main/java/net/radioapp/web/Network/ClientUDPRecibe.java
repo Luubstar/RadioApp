@@ -1,17 +1,13 @@
-package net.radioapp.client.UDP;
+package net.radioapp.web.Network;
 
 import net.radioapp.client.ClientActions;
-import net.radioapp.web.UDP.UDPDataArray;
-import net.radioapp.web.UDP.UDPPacket;
+import net.radioapp.client.ClientNetHandler;
 
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 
 public class ClientUDPRecibe extends Thread{
-    ClientActions acciones;
-    public ClientUDPRecibe(ClientActions a){
-        acciones = a;
-    }
+    public ClientUDPRecibe(){}
     @Override
     public void run() {
         try {
@@ -20,7 +16,9 @@ public class ClientUDPRecibe extends Thread{
             DatagramPacket pq = new DatagramPacket(buffer, buffer.length);
             while (true) {
                 s.receive(pq);
-                if (pq.getData().length > 0){acciones.addAction(pq.getData());}
+                if (pq.getData().length > 0){
+                    ClientNetHandler.receive(pq.getData());
+                }
                 buffer = new byte[UDPDataArray.CHUNKSIZE];
                 pq = new DatagramPacket(buffer, buffer.length);
             }

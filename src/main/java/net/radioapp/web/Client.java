@@ -1,8 +1,10 @@
-package net.radioapp.web.netbasic;
+package net.radioapp.web;
 
 import net.radioapp.Main;
 import net.radioapp.commandController.actions.ActionHandler;
-import net.radioapp.web.UDP.PackageTypes;
+import net.radioapp.web.Network.ClientHandler;
+import net.radioapp.web.Network.PackageTypes;
+
 import java.net.InetAddress;
 
 public class Client {
