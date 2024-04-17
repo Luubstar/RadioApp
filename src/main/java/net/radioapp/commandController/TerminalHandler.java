@@ -1,9 +1,7 @@
 package net.radioapp.commandController;
 
 import net.radioapp.InputHandler;
-import net.radioapp.Main;
 import net.radioapp.commandController.actions.Action;
-import net.radioapp.web.inputServer.Connectivity;
 
 import java.util.Scanner;
 

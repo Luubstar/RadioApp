@@ -106,11 +106,4 @@ public class Emisora {
         this.frecuency = frecuency;
     }
 
-    public List<Audio> getFicheros() {
-        return ficheros;
-    }
-
-    public void setFicheros(List<Audio> ficheros) {
-        this.ficheros = ficheros;
-    }
 }

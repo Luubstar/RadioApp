@@ -1,8 +1,6 @@
 package net.radioapp.commandController.actions;
 
 import net.radioapp.InputHandler;
-import net.radioapp.commandController.actions.Action;
-import net.radioapp.commandController.actions.ActionType;
 
 import java.util.Arrays;
 

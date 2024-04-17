@@ -3,20 +3,13 @@ package net.radioapp.web.netbasic;
 import net.radioapp.Main;
 import net.radioapp.commandController.actions.ActionHandler;
 import net.radioapp.web.UDP.PackageTypes;
-import net.radioapp.web.UDP.UDPDataArray;
-import net.radioapp.web.UDP.UDPEmitter;
-import net.radioapp.web.UDP.UDPPacket;
-
-import java.io.IOException;
-import java.net.DatagramSocket;
 import java.net.InetAddress;
-import java.net.SocketException;
 
 public class Client {
     private final InetAddress address;
     private double frecuency;
-    private boolean isNew = false;
-    private boolean waitingPing = false;
+    private boolean isNew;
+    private boolean waitingPing;
     private int lostedPings = 0;
 
     public Client(InetAddress address, double frecuency) {

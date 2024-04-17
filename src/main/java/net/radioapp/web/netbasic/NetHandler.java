@@ -3,7 +3,6 @@ package net.radioapp.web.netbasic;
 import net.radioapp.commandController.actions.ActionHandler;
 import net.radioapp.WebHandler;
 import net.radioapp.commandController.actions.Action;
-import net.radioapp.commandController.actions.ActionType;
 import net.radioapp.web.UDP.PackageTypes;
 import net.radioapp.web.UDP.UDPEmitter;
 import net.radioapp.web.UDP.UDPPacket;
@@ -18,7 +17,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Stream;
 
@@ -58,7 +56,7 @@ public class NetHandler implements WebHandler {
             g.readConfigFile();
             gruposList.add(g);
         }
-        grupoActual = gruposList.get(0);
+        grupoActual = gruposList.getFirst();
         recibidor = new UDPRecibe();
         recibidor.start();
     }

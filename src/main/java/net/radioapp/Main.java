@@ -17,9 +17,8 @@ import java.io.IOException;
 public class Main {
     private static final InputHandler manejador = new TerminalHandler();
     private static final WebHandler net = new NetHandler();
-    private static Connectivity connectivityMode = Connectivity.NEVER;
 
-    private static boolean emitting, lockedOn, lockedVolume, lockedFrecuency;
+    private static boolean lockedOn, lockedVolume, lockedFrecuency;
     private static String emittingGroup;
 
 
@@ -64,20 +63,6 @@ public class Main {
 
     public static void send(PackageTypes t, byte[] arg){net.send(t, arg);}
     public static void send(Client c, PackageTypes t, byte[] arg){net.send(c,t,arg);}
-
-    public static Connectivity getConnectivityMode() {
-        return connectivityMode;
-    }
-
-    public static void setConnectivityMode(Connectivity cm) {connectivityMode = cm;}
-
-    public static boolean isEmitting() {
-        return emitting;
-    }
-
-    public static void setEmitting(boolean emitting) {
-        Main.emitting = emitting;
-    }
 
     public static boolean isLockedOn() {
         return lockedOn;
