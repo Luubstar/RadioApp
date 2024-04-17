@@ -4,11 +4,15 @@ import net.radioapp.commandController.actions.Action;
 import net.radioapp.commandController.actions.ActionType;
 import net.radioapp.commandController.commands.*;
 
+import java.io.File;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
 
 public class CommandController {
     private List<Command> comandos;
+    private static final String COMMANDS_DIRECTORY = "src/main/java/net/radioapp/commandController/commands";
 
     public void initialize(){
         comandos = new ArrayList<>();
@@ -16,18 +20,17 @@ public class CommandController {
     }
 
     private void start(){
-        //TODO: Sistema para que lea .javas en vez de esto
         register(new HelpCommand());
         register(new QuitCommand());
-        register(new LockOnOff());
-        register(new LockFrecuency());
-        register(new LockVolume());
-        register(new SetFrecuencyCommand());
         register(new RestartCommand());
         register(new StartCommand());
         register(new StopCommand());
         register(new StateCommand());
         register(new SayCommand());
+        register(new LockFrecuency());
+        register(new LockVolume());
+        register(new LockOnOff());
+        register(new SetFrecuencyCommand());
     }
 
     private void register(Command c){comandos.add(c);}

@@ -7,6 +7,7 @@ import java.util.Comparator;
 import java.util.PriorityQueue;
 import java.util.TreeMap;
 
+//TODO: Esto debería implementar una interfaz para hacerlo intercambiable
 public class ClientPlayer extends  Thread{
     SourceDataLine line;
     ByteArrayOutputStream data = new ByteArrayOutputStream();

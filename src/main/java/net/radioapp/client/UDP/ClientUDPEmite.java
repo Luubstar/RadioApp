@@ -1,4 +1,4 @@
-package net.radioapp.client;
+package net.radioapp.client.UDP;
 
 import net.radioapp.web.UDP.UDPEmitter;
 import net.radioapp.web.UDP.UDPPacket;
