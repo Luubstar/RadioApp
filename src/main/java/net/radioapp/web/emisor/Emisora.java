@@ -20,7 +20,7 @@ public class Emisora {
     private final String name;
     private final Path path;
     private double frecuency;
-    private List<Audio> ficheros = new ArrayList<>();
+    private final List<Audio> ficheros = new ArrayList<>();
     private Audio actualTrack;
     private float time;
 
