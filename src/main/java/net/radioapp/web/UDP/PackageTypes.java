@@ -10,7 +10,8 @@ public enum PackageTypes {
     EMISION(6),
     LOCKVOLUMEN(7),
     LOCKFRECUENCIA(8),
-    LOCKONOFF(9);
+    LOCKONOFF(9),
+    PING(10);
 
     final int bytevalue;
     PackageTypes(int bytevalue){

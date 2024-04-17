@@ -12,7 +12,6 @@ import java.util.List;
 
 public class CommandController {
     private List<Command> comandos;
-    private static final String COMMANDS_DIRECTORY = "src/main/java/net/radioapp/commandController/commands";
 
     public void initialize(){
         comandos = new ArrayList<>();

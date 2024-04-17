@@ -3,10 +3,12 @@ package net.radioapp.client;
 import net.radioapp.web.UDP.PackageTypes;
 import net.radioapp.web.UDP.UDPDataArray;
 import net.radioapp.web.UDP.UDPPacket;
+import net.radioapp.web.netbasic.Client;
 
 import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.UnsupportedAudioFileException;
 import java.io.*;
+import java.net.InetAddress;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.LinkedList;
@@ -50,6 +52,11 @@ public class ClientActions extends Thread{
                     break;
                 case LOG:
                     System.out.println(command);
+                    break;
+                case PING:
+                    //TODO: Necesito un mejor sistema para mandar paquetes
+                    System.out.println("Pingeando");
+                    new UDPPacket(new Client(InetAddress.getByName("127.0.0.1"),0), PackageTypes.PING);
                     break;
                 default:
                     System.out.println("Algo ha fallado");

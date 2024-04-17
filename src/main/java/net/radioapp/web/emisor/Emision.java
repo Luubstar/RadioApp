@@ -15,8 +15,7 @@ import java.util.Arrays;
 import java.util.List;
 
 public class Emision extends Thread{
-    private final int SECONDSFOREMISSION = 5;
-    private final int AJUSTE = 10000;
+    private final int SECONDSFOREMISSION = 4;
     Emisora emisora;
     public boolean connected = true;
     public Emision(Emisora fuente){
@@ -25,8 +24,12 @@ public class Emision extends Thread{
     public List<Client> getclients(){
         List<Client> clientes = new ArrayList<>();
         while (clientes.isEmpty()){
-            for(Client c : ClientHandler.getClientes()){
-                if (c.getFrecuency() == emisora.getFrecuency()){clientes.add(c);}
+            List<Client> activos = new ArrayList<>(ClientHandler.getClientes());
+            for(Client c : activos){
+                if (c.getFrecuency() == emisora.getFrecuency()){
+                    clientes.add(c);
+                    c.ping();
+                }
             }
             try {
                 Thread.sleep(100);
@@ -50,7 +53,7 @@ public class Emision extends Thread{
     }
 
     @Override
-    public void run() {
+    public void run() { //TODO: Lo del tiempo funciona como el culo
         float dx = 0;
         while (connected){
             long stime = System.nanoTime();
@@ -64,7 +67,6 @@ public class Emision extends Thread{
                 emisora.addSeconds(sdif + dx);
 
                 byte[] buffer = emisora.getSecondsFromAudio(SECONDSFOREMISSION);
-
                 broadcast(buffer, escuchas, PackageTypes.EMISION);
 
                 broadcast(new byte[0], escuchas, PackageTypes.FINEMISION);
@@ -73,11 +75,10 @@ public class Emision extends Thread{
                 sdif = (int) (etime - stime)/1000000;
                 int res = (SECONDSFOREMISSION * 1000)-sdif;
                 if(res < 0){res = 0;}
-                //System.out.println(res);
                 try {Thread.sleep( res);} catch (InterruptedException e){throw new RuntimeException(e);}
                 dx = (float) res /1000;
             }
-            catch (IOException e){
+            catch (Exception e){
                 ActionHandler.filterAction(new Action("", "Error emisor " + Arrays.toString(e.getStackTrace()) + "\n" + e.getMessage(), ActionType.QUIT));
             }
         }

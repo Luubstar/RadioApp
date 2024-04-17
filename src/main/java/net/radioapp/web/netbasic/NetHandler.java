@@ -112,16 +112,24 @@ public class NetHandler implements WebHandler {
 
     @Override
     public void filterAction(Action action) {
-        //TODO: Switch
-        if(action.getName().equalsIgnoreCase("start")){start();}
-        if(action.getName().equalsIgnoreCase("stop")){stop();}
-        if(action.getName().equalsIgnoreCase("restart")){restart();}
-        if(action.getName().equalsIgnoreCase("say")){send(PackageTypes.LOG, action.getRes());}
-        if(action.getName().equalsIgnoreCase("setfrecuency")){
-            ClientHandler.moveAll(Double.parseDouble(action.getRes()));
-            send(PackageTypes.MOVER, action.getRes());
-            ActionHandler.filterAction(new Action("", "Todos los clientes han sido" +
-                    "cambiados a la frecuencia " + action.getRes(), ActionType.LOG));
+        switch (action.getName().toLowerCase()) {
+            case "start":
+                start();
+                break;
+            case "stop":
+                stop();
+                break;
+            case "restart":
+                restart();
+                break;
+            case "say":
+                send(PackageTypes.LOG, action.getRes());
+            case "setfrecuency":
+                ClientHandler.moveAll(Double.parseDouble(action.getRes()));
+                send(PackageTypes.MOVER, action.getRes());
+                ActionHandler.log("Todos los clientes han sido" +
+                        "cambiados a la frecuencia ");
+                break;
         }
     }
 

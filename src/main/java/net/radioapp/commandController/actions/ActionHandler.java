@@ -4,6 +4,8 @@ import net.radioapp.InputHandler;
 import net.radioapp.commandController.actions.Action;
 import net.radioapp.commandController.actions.ActionType;
 
+import java.util.Arrays;
+
 public class ActionHandler {
 
     private static InputHandler manejador;
@@ -38,4 +40,14 @@ public class ActionHandler {
         return manejador.getController().getHelpCommands(s);
     }
 
+    public static void handleException(Exception e){
+        String b = "Se ha lanzado una excepción -> " + e.getMessage() +
+                "\n" + Arrays.toString(e.getStackTrace());
+        manejador.error(b);
+    }
+    //TODO: Sustituye todas las excepciones por este modelo
+    // Y todos los logs por este metodo
+    public static void log(String c){
+        filterAction(new Action("", c, ActionType.LOG));
+    }
 }

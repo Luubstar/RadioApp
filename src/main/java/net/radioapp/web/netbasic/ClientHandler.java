@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ClientHandler {
+    protected static final int MAX_LOSTED_PINGS = 3;
     private static List<Client> clientes = new ArrayList<>();
     private static boolean online;
 
@@ -32,6 +33,10 @@ public class ClientHandler {
         else{return getClient(address);}
     }
 
+    public static void removeClient(Client c){
+        clientes.remove(c);
+    }
+
     public static void setClientes(List<Client> clientes) {
         ClientHandler.clientes = clientes;
     }
@@ -43,7 +48,6 @@ public class ClientHandler {
         return null;
     }
 
-    //TODO: Eliminar clientes que no manden paquetes en mucho tiempo
     public static void filterCommand(byte[] c, InetAddress address){
         PackageTypes type = PackageTypes.obtenerTipoPorCodigo(c[0]);
 
@@ -54,14 +58,18 @@ public class ClientHandler {
         Client client = getClient(address);
         if (client == null) {client = addClient(address);}
 
-        if (type == PackageTypes.HELO || client.isNew()){
+        if (type.equals(PackageTypes.HELO) || client.isNew()){
             client.turnNew();
             ActionHandler.filterAction(new Action("nuevo cliente", "Nuevo cliente conectado", ActionType.LOG));
             new UDPEmitter(new UDPPacket(client,"Conectado satisfactoriamente".getBytes(), PackageTypes.LOG)).start();
         }
-        if (type == PackageTypes.MOVER){
+        else if (type.equals(PackageTypes.MOVER)){
             command = command.split("move: ")[0];
             client.setFrecuency(Double.parseDouble(command));
+        }
+        else if (type.equals(PackageTypes.PING)){
+            client.pingReceived();
+            ActionHandler.log("Ping recibido");
         }
     }
 
