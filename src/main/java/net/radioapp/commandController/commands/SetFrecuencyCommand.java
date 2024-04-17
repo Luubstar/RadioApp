@@ -13,6 +13,7 @@ public class SetFrecuencyCommand extends Command {
     }
     @Override
     public Action call(String[] args) {
+        if(args.length == 0){return  new Action("error", "Tamaño de argumentos inválido", ActionType.ERROR);}
         return  new Action(this.getName(),args[0], ActionType.WEB);
     }
 }

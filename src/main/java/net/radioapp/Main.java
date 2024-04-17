@@ -7,6 +7,8 @@ import net.radioapp.commandController.TerminalHandler;
 import net.radioapp.commandController.commands.LockFrecuency;
 import net.radioapp.commandController.commands.LockOnOff;
 import net.radioapp.commandController.commands.LockVolume;
+import net.radioapp.web.UDP.PackageTypes;
+import net.radioapp.web.netbasic.Client;
 import net.radioapp.web.netbasic.NetHandler;
 import net.radioapp.web.inputServer.Connectivity;
 
@@ -59,6 +61,9 @@ public class Main {
         else if (action.getName().equals(new LockOnOff().getName())){Main.setLockedOn(!Main.isLockedOn());}
         else if (action.getName().equals(new LockVolume().getName())){Main.setLockedVolume(!Main.isLockedVolume());}
     }
+
+    public static void send(PackageTypes t, byte[] arg){net.send(t, arg);}
+    public static void send(Client c, PackageTypes t, byte[] arg){net.send(c,t,arg);}
 
     public static Connectivity getConnectivityMode() {
         return connectivityMode;

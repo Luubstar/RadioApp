@@ -32,7 +32,7 @@ public class Emisora {
             actualTrack = ficheros.getFirst();
         }
         catch (IOException e){
-            ActionHandler.handleException(e);
+            ActionHandler.handleException(e, "Fallo al leer los ficheros en la creación de las emisoras");
         }
     }
 
@@ -42,7 +42,7 @@ public class Emisora {
         {
             try {
                 ficheros.add(new Audio(e.toFile()));} catch (UnsupportedAudioFileException | IOException ex) {
-                ActionHandler.handleException(ex);
+                ActionHandler.handleException(ex, "Archivo de audio " + e.getFileName() + " no soportado");
             }
         });
     }

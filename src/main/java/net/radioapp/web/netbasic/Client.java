@@ -1,5 +1,6 @@
 package net.radioapp.web.netbasic;
 
+import net.radioapp.Main;
 import net.radioapp.commandController.actions.ActionHandler;
 import net.radioapp.web.UDP.PackageTypes;
 import net.radioapp.web.UDP.UDPDataArray;
@@ -51,18 +52,13 @@ public class Client {
             }
         }
         waitingPing = true;
-        try {
-            new UDPPacket(this, PackageTypes.PING).send(new DatagramSocket(), UDPPacket.CLIENTRECIBER);
-        }
-        catch (IOException e){
-            ActionHandler.handleException(e);
-        }
+        Main.send(PackageTypes.PING, new byte[0]);
     }
 
     public void pingLost(){lostedPings++;}
 
     @Override
     public String toString() {
-        return address + " -> " + frecuency + " MHz";
+        return address + " -> " + frecuency + " MHz" + " / Ping losts -> " + lostedPings;
     }
 }

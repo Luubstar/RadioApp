@@ -97,18 +97,20 @@ public class NetHandler implements WebHandler {
         ClientHandler.setOnline(false);
         recibidor.setCanRun(false);
         try{initialize();}
-        catch (Exception e){ActionHandler.handleException(e);}
+        catch (Exception e){ActionHandler.handleException(e, "Error en el reinicio del servicio de red");}
         ClientHandler.setClientes(new ArrayList<>());
         ClientHandler.setOnline(true);
         ActionHandler.log(Colors.Green.colorize("Sistema reiniciado"));
     }
 
     @Override
-    public void send(PackageTypes t, String arg) {
+    public void send(PackageTypes t, byte[] arg) {
         for(Client c: ClientHandler.getClientes()){
-            new UDPEmitter(new UDPPacket(c, arg.getBytes(), t)).start();
+            new UDPEmitter(new UDPPacket(c, arg, t)).start();
         }
     }
+
+    public void send(Client c, PackageTypes t, byte[] arg){}
 
     @Override
     public void filterAction(Action action) {
@@ -123,13 +125,17 @@ public class NetHandler implements WebHandler {
                 restart();
                 break;
             case "say":
-                send(PackageTypes.LOG, action.getRes());
-            case "setfrecuency":
-                ClientHandler.moveAll(Double.parseDouble(action.getRes()));
-                send(PackageTypes.MOVER, action.getRes());
-                ActionHandler.log("Todos los clientes han sido" +
-                        "cambiados a la frecuencia ");
+                send(PackageTypes.LOG, action.getRes().getBytes());
                 break;
+            case "setfrecuency":
+                try{
+                    ClientHandler.moveAll(Double.parseDouble(action.getRes()));
+                    send(PackageTypes.MOVER, action.getRes().getBytes());
+                    ActionHandler.log("Todos los clientes han sido" +
+                            "cambiados a la frecuencia ");}
+                catch(NumberFormatException e){ActionHandler.handleException(e, "La frecuencia debe de ser un número válido");}
+                break;
+
         }
     }
 
