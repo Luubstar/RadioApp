@@ -5,11 +5,12 @@ import java.nio.ByteBuffer;
 public class UDPDataArray {
     byte[] data;
     int editingPosition = 0;
-    public static final int CHUNKSIZE = 1024;
+    public static final int CHUNKSIZE = 2048;
     public static final int METADATASIZE = 5;
     public UDPDataArray(int size){
         data = new byte[size];
     }
+    public UDPDataArray(){data = new byte[CHUNKSIZE-METADATASIZE];}
     public UDPDataArray(byte[] data){
         this.data = data;
     }

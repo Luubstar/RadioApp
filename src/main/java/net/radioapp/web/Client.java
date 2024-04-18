@@ -4,6 +4,7 @@ import net.radioapp.Main;
 import net.radioapp.commandController.actions.ActionHandler;
 import net.radioapp.web.Network.ClientHandler;
 import net.radioapp.web.Network.PackageTypes;
+import net.radioapp.web.Network.UDPDataArray;
 
 import java.net.InetAddress;
 
@@ -47,7 +48,7 @@ public class Client {
             }
         }
         waitingPing = true;
-        Main.send(PackageTypes.PING, new byte[0]);
+        Main.send(new UDPDataArray(), PackageTypes.PING);
     }
 
     public void pingLost(){lostedPings++;}

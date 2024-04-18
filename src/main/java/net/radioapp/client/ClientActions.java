@@ -30,6 +30,7 @@ public class ClientActions extends Thread{
             c = packet.getContent();
 
             String command = new String(c, StandardCharsets.UTF_8).trim();
+            //TODO: Creo que se está congelando cuando llegan muchas emisiones tras un finemision y congela el ping
             switch (type) {
                 case INICIOEMISION:
                     System.out.println("Recibiendo canción");
@@ -50,7 +51,7 @@ public class ClientActions extends Thread{
                     break;
                 case PING:
                     System.out.println("Pingeando");
-                    ClientNetHandler.send(new UDPDataArray(0), PackageTypes.PING);
+                    ClientNetHandler.send(new UDPDataArray(), PackageTypes.PING);
                     break;
                 default:
                     System.out.println("Algo ha fallado");

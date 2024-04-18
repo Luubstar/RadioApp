@@ -99,13 +99,15 @@ public class NetHandler implements WebHandler {
     }
 
     @Override
-    public void send(PackageTypes t, byte[] arg) {
+    public void send(UDPDataArray arg, PackageTypes t) {
         for(Client c: ClientHandler.getClientes()){
-            new UDPEmitter(new UDPPacket(c, arg, t)).start();
+            new UDPEmitter(new UDPPacket(c, arg.getData(), t)).start();
         }
     }
 
-    public void send(Client c, PackageTypes t, byte[] arg){}
+    public void send(UDPDataArray arg, PackageTypes t, Client c){
+        new UDPEmitter(new UDPPacket(c, arg.getData(), t)).start();
+    }
 
     @Override
     public void filterAction(Action action) {
@@ -120,12 +122,12 @@ public class NetHandler implements WebHandler {
                 restart();
                 break;
             case "say":
-                send(PackageTypes.LOG, action.getRes().getBytes());
+                send(new UDPDataArray(action.getRes().getBytes()), PackageTypes.LOG);
                 break;
             case "setfrecuency":
                 try{
                     ClientHandler.moveAll(Double.parseDouble(action.getRes()));
-                    send(PackageTypes.MOVER, action.getRes().getBytes());
+                    send(new UDPDataArray(action.getRes().getBytes()), PackageTypes.MOVER);
                     ActionHandler.log("Todos los clientes han sido" +
                             "cambiados a la frecuencia ");}
                 catch(NumberFormatException e){ActionHandler.handleException(e, "La frecuencia debe de ser un número válido");}

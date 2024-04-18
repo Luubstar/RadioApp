@@ -2,6 +2,7 @@ package net.radioapp.web.Network;
 
 import net.radioapp.web.Client;
 
+import javax.xml.datatype.Duration;
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
@@ -47,6 +48,11 @@ class UDPPacket {
     public void send(DatagramSocket s, int port) throws IOException {
         for(UDPDataArray b : arrays){
             s.send(new DatagramPacket(b.getData(), b.getData().length, cliente.getAddress(), port));
+            try {
+                Thread.sleep(1);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
         }
     }
 }

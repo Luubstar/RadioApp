@@ -10,6 +10,7 @@ import net.radioapp.commandController.commands.LockVolume;
 import net.radioapp.web.Network.PackageTypes;
 import net.radioapp.web.Client;
 import net.radioapp.web.Network.NetHandler;
+import net.radioapp.web.Network.UDPDataArray;
 
 import java.io.IOException;
 
@@ -60,8 +61,8 @@ public class Main {
         else if (action.getName().equals(new LockVolume().getName())){Main.setLockedVolume(!Main.isLockedVolume());}
     }
 
-    public static void send(PackageTypes t, byte[] arg){net.send(t, arg);}
-    public static void send(Client c, PackageTypes t, byte[] arg){net.send(c,t,arg);}
+    public static void send(UDPDataArray arg, PackageTypes t){net.send(arg, t);}
+    public static void send(UDPDataArray arg, PackageTypes t, Client c){net.send(arg, t,c);}
 
     public static boolean isLockedOn() {
         return lockedOn;

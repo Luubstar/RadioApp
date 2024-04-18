@@ -7,6 +7,7 @@ import net.radioapp.commandController.actions.ActionType;
 import net.radioapp.web.Network.PackageTypes;
 import net.radioapp.web.Client;
 import net.radioapp.web.Network.ClientHandler;
+import net.radioapp.web.Network.UDPDataArray;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -27,6 +28,7 @@ public class Emision extends Thread{
                 if (c.getFrecuency() == emisora.getFrecuency() && !clientes.contains(c)){
                     clientes.add(c);
                     c.ping();
+                    ActionHandler.log("Ping emitido");
                 }
             }
             try {
@@ -53,7 +55,7 @@ public class Emision extends Thread{
     //TODO: Testea bien este método nuevo
     public void broadcast(byte[] b, List<Client> clientes, PackageTypes t) {
         for (Client c: clientes) {
-            Main.send(c, t, b);
+            Main.send(new UDPDataArray(b), t, c);
         }
     }
 
@@ -72,6 +74,7 @@ public class Emision extends Thread{
                 emisora.addSeconds(sdif + dx);
 
                 byte[] buffer = emisora.getSecondsFromAudio(SECONDSFOREMISSION);
+                //byte[] buffer = new byte[0];
                 broadcast(buffer, escuchas, PackageTypes.EMISION);
 
                 broadcast(new byte[0], escuchas, PackageTypes.FINEMISION);
