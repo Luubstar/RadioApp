@@ -17,7 +17,7 @@ public class ClientUDPRecibe extends Thread{
             DatagramPacket pq = new DatagramPacket(buffer, buffer.length);
             while (true) {
                 s.receive(pq);
-                System.out.println(new UDPDataArray(pq.getData()).getType());
+                //System.out.println(new UDPDataArray(pq.getData()).getType());
                 if (pq.getData().length > 0){
                     ClientNetHandler.receive(pq.getData());
                 }

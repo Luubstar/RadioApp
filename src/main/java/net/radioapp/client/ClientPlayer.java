@@ -15,9 +15,8 @@ public class ClientPlayer extends  Thread{
     public static boolean running;
     private boolean reading;
 
-    public ClientPlayer(){
+    public ClientPlayer(){}
 
-    }
     public synchronized void addToPlay(byte[] stream, int pos) throws IOException, InterruptedException {
         while (reading){Thread.sleep(1);}
         reading = true;
