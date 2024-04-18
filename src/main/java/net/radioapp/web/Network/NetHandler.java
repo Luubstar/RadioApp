@@ -70,8 +70,8 @@ public class NetHandler implements WebHandler {
     public void start() {
         if(!ClientHandler.isOnline()){
         ClientHandler.setOnline(true);
-        ActionHandler.log(Colors.Green.colorize("Sistema iniciado"));}
-        else {ActionHandler.log(Colors.Red.colorize("El sistema ya está iniciado"));}
+        ActionHandler.log(Colors.Green.colorize("> Sistema iniciado"));}
+        else {ActionHandler.log(Colors.Red.colorize(" El sistema ya está iniciado"));}
 
         for (Emisora e : emisorasList){
             new Emision(e).start();
@@ -82,9 +82,9 @@ public class NetHandler implements WebHandler {
     public void stop() {
         if (ClientHandler.isOnline()) {
             ClientHandler.setOnline(false);
-            ActionHandler.log(Colors.Green.colorize("Sistema parado"));
+            ActionHandler.log(Colors.Green.colorize(" Sistema parado"));
         }
-        else{ActionHandler.log(Colors.Red.colorize("El sistema ya está parado"));}
+        else{ActionHandler.log(Colors.Red.colorize(" El sistema ya está parado"));}
     }
 
     @Override
@@ -92,10 +92,10 @@ public class NetHandler implements WebHandler {
         ClientHandler.setOnline(false);
         recibidor.setCanRun(false);
         try{initialize();}
-        catch (Exception e){ActionHandler.handleException(e, "Error en el reinicio del servicio de red");}
+        catch (Exception e){ActionHandler.handleException(e, " Error en el reinicio del servicio de red");}
         ClientHandler.setClientes(new ArrayList<>());
         ClientHandler.setOnline(true);
-        ActionHandler.log(Colors.Green.colorize("Sistema reiniciado"));
+        ActionHandler.log(Colors.Green.colorize(" Sistema reiniciado"));
     }
 
     @Override

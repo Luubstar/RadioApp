@@ -27,7 +27,7 @@ public class ClientActions extends Thread{
 
             int pos = UDPDataArray.byteToInt(packet.getData(2,5));
 
-            c = packet.getData(UDPDataArray.METADATASIZE, UDPDataArray.CHUNKSIZE-1);
+            c = packet.getContent();
 
             String command = new String(c, StandardCharsets.UTF_8).trim();
             switch (type) {

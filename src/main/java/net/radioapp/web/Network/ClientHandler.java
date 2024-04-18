@@ -44,14 +44,14 @@ public class ClientHandler {
         return null;
     }
 
-    public static void filterCommand(byte[] c, InetAddress address){
-        PackageTypes type = PackageTypes.obtenerTipoPorCodigo(c[0]);
+    public static void filterCommand(UDPDataArray c, InetAddress address){
+        PackageTypes type = c.getType();
 
-        System.arraycopy(c, 1, c, 0, c.length-1);
-        String command = new String(c, StandardCharsets.UTF_8);
+        String command = new String(c.getContent(), StandardCharsets.UTF_8);
 
-        command = command.toLowerCase();
+        command = command.trim().toLowerCase();
         Client client = getClient(address);
+
         if (client == null) {client = addClient(address);}
 
         if (type.equals(PackageTypes.HELO) || client.isNew()){
@@ -59,13 +59,19 @@ public class ClientHandler {
             ActionHandler.log("Nuevo cliente conectado");
             new UDPEmitter(new UDPPacket(client,"Conectado satisfactoriamente".getBytes(), PackageTypes.LOG)).start();
         }
-        else if (type.equals(PackageTypes.MOVER)){
+
+
+        if (type.equals(PackageTypes.MOVER)){
             command = command.split("move: ")[0];
             client.setFrecuency(Double.parseDouble(command));
         }
         else if (type.equals(PackageTypes.PING)){
             client.pingReceived();
             ActionHandler.log("Ping recibido");
+        }
+        else{
+            ActionHandler.log("Algo ha fallado");
+            ActionHandler.log(type.toString());
         }
     }
 

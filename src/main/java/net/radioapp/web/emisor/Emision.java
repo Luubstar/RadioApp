@@ -24,7 +24,7 @@ public class Emision extends Thread{
         while (clientes.isEmpty()){
             List<Client> activos = new ArrayList<>(ClientHandler.getClientes());
             for(Client c : activos){
-                if (c.getFrecuency() == emisora.getFrecuency()){
+                if (c.getFrecuency() == emisora.getFrecuency() && !clientes.contains(c)){
                     clientes.add(c);
                     c.ping();
                 }

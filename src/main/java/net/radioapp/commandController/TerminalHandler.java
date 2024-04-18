@@ -10,7 +10,7 @@ public class TerminalHandler implements InputHandler {
     Scanner Input;
     private final Colors exitColor = new Colors(Colors.TYPE_TEXT, 99, 99, 99);
     private final Colors errorColor = Colors.Red;
-    private static final String commandPrefix = ">";
+    private static final String commandPrefix = "> ";
     @Override
     public void initialize() {
         controlador = new CommandController();
@@ -30,7 +30,6 @@ public class TerminalHandler implements InputHandler {
         if(res.equals("P")){ Main.setConnectivityMode(Connectivity.ASK);}
         else if(res.equals("N")){ Main.setConnectivityMode(Connectivity.NEVER);}
         else{ Main.setConnectivityMode(Connectivity.ALWAYS);}*/
-        startTyping();
     }
 
     public void startTyping(){
@@ -39,7 +38,6 @@ public class TerminalHandler implements InputHandler {
 
     @Override
     public Action getAction() {
-        System.out.print("\n"+commandPrefix);
         String res = Input.nextLine().toLowerCase();
 
         String[] temp = res.split(" ");

@@ -26,7 +26,7 @@ class UDPRecibe extends Thread{
                 else {
                     try{
                         s.receive(pq);
-                        ClientHandler.filterCommand(pq.getData(), pq.getAddress());
+                        ClientHandler.filterCommand(new UDPDataArray(pq.getData()), pq.getAddress());
 
                         buffer = new byte[UDPDataArray.CHUNKSIZE];
                         pq = new DatagramPacket(buffer, buffer.length);

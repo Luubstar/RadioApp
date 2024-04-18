@@ -41,6 +41,8 @@ public class UDPDataArray {
         for(int i = 0; i < res.length ; i++) {res[i] = data[i + start]; }
         return res;
     }
+
+    public byte[] getContent(){return getData(UDPDataArray.METADATASIZE, UDPDataArray.CHUNKSIZE-1);}
     public PackageTypes getType(){return PackageTypes.obtenerTipoPorCodigo(data[0]);}
     public int getEndIndex(){return data.length-1;}
     public byte[] getData(){return data;}
