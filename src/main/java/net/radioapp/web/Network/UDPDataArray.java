@@ -1,6 +1,11 @@
 package net.radioapp.web.Network;
 
 import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
+import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
 
 public class UDPDataArray {
     byte[] data;
@@ -45,15 +50,32 @@ public class UDPDataArray {
 
     public byte[] getContent(){return getData(UDPDataArray.METADATASIZE, UDPDataArray.CHUNKSIZE-1);}
     public PackageTypes getType(){return PackageTypes.obtenerTipoPorCodigo(data[0]);}
-    public int getEndIndex(){return data.length-1;}
     public byte[] getData(){return data;}
 
     public static int byteToInt(byte[] c){
+        if (c.length % 4 != 0){
+            byte[] temp = new byte[c.length + c.length%4];
+            System.arraycopy(c,0,temp,c.length%4, c.length);
+            c = temp;
+        }
         return ByteBuffer.wrap(c).getInt();
+    }
+    public static int byteToIntLittleEndian(byte[] c){
+        if (c.length % 4 != 0){
+            byte[] temp = new byte[c.length + c.length%4];
+            System.arraycopy(c,0,temp,0, c.length);
+            c = temp;
+        }
+        return ByteBuffer.wrap(c).order(ByteOrder.LITTLE_ENDIAN).getInt();
     }
 
     public static byte[] intToByte(int c){
         return ByteBuffer.allocate(4).putInt(c).array();
+    }
+
+    public static String byteToString(byte[] b){return  new String(b, StandardCharsets.UTF_8);}
+    public static byte[] changeToBigEndian(byte[] b){
+        return intToByte(byteToIntLittleEndian(b));
     }
 
 }

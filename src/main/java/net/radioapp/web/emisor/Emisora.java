@@ -41,7 +41,10 @@ public class Emisora {
         files.filter(Files::isRegularFile).filter((e) -> !e.getFileName().toString().contains(".json")).forEach((e) ->
         {
             try {
-                ficheros.add(new Audio(e.toFile()));} catch (UnsupportedAudioFileException | IOException ex) {
+                Audio a = Audio.newAudio(e.toFile());
+                ficheros.add(a);
+            }
+            catch (UnsupportedAudioFileException | IOException ex) {
                 ActionHandler.handleException(ex, "Archivo de audio " + e.getFileName() + " no soportado");
             }
         });
