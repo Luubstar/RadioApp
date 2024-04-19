@@ -24,7 +24,7 @@ public class AudioWAV extends Audio{
     }
 
     @Override
-    public UDPDataArray getMetadata() throws IOException {
+    public UDPDataArray getMetadata(){
         UDPDataArray array = new UDPDataArray();
         array.addData(AudioExtension.WAV.getBytevalue());
         array.addData(UDPDataArray.intToByte(sampleRate));

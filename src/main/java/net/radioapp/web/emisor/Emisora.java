@@ -109,4 +109,7 @@ public class Emisora {
         this.frecuency = frecuency;
     }
 
+    public Audio getActualTrack() {
+        return actualTrack;
+    }
 }

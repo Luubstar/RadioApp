@@ -26,7 +26,7 @@ public abstract class Audio {
         return archivo;
     }
 
-    public UDPDataArray getMetadata() throws IOException {return null;}
+    public UDPDataArray getMetadata() {return null;}
 
     public byte[] getSeconds(int start, int duration) throws IOException {
         FileInputStream stream = new FileInputStream(archivo);

@@ -66,7 +66,7 @@ public class Emision extends Thread{
             long stime = System.nanoTime();
             List<Client> escuchas = getclients();
 
-            broadcast(new byte[0], escuchas, PackageTypes.INICIOEMISION);
+            broadcast(emisora.getActualTrack().getMetadata().getData(), escuchas, PackageTypes.INICIOEMISION);
             try{
                 long etime = System.nanoTime();
                 stime = System.nanoTime();
@@ -74,7 +74,6 @@ public class Emision extends Thread{
                 emisora.addSeconds(sdif + dx);
 
                 byte[] buffer = emisora.getSecondsFromAudio(SECONDSFOREMISSION);
-                //byte[] buffer = new byte[0];
                 broadcast(buffer, escuchas, PackageTypes.EMISION);
 
                 broadcast(new byte[0], escuchas, PackageTypes.FINEMISION);

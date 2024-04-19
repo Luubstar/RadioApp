@@ -35,6 +35,7 @@ public class ClientActions extends Thread{
             System.out.println(pos);
             switch (type) {
                 case INICIOEMISION:
+                    //TODO: Leer los metadatos para crear la configuración
                     System.out.println("Recibiendo canción");
                     break;
                 case FINEMISION:
