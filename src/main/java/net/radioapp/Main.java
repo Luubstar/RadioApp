@@ -32,10 +32,12 @@ public class Main {
     }
 
     public static void start(){
-        Action lastAction;
+        Action[] lastActions;
         while(true) {
-            lastAction = manejador.getAction();
-            filterAction(lastAction);
+            lastActions = manejador.getAction();
+            for(Action a: lastActions) {
+                filterAction(a);
+            }
         }
     }
 

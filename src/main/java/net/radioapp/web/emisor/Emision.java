@@ -25,10 +25,9 @@ public class Emision extends Thread{
         while (clientes.isEmpty()){
             List<Client> activos = new ArrayList<>(ClientHandler.getClientes());
             for(Client c : activos){
+                c.ping();
                 if (c.getFrecuency() == emisora.getFrecuency() && !clientes.contains(c)){
                     clientes.add(c);
-                    c.ping();
-                    ActionHandler.log("Ping emitido");
                 }
             }
             try {
@@ -71,7 +70,7 @@ public class Emision extends Thread{
                 long etime = System.nanoTime();
                 stime = System.nanoTime();
                 int sdif = (int) (etime - stime)/1000000000;
-                emisora.addSeconds(sdif + dx);
+                emisora.addSeconds(sdif + dx); //TODO: Preprocesar esto en la inicialización
 
                 byte[] buffer = emisora.getSecondsFromAudio(SECONDSFOREMISSION);
                 broadcast(buffer, escuchas, PackageTypes.EMISION);

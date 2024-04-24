@@ -6,7 +6,7 @@ import java.util.Scanner;
 
 public class ClientMain {
 
-    public static void main(String[] args) throws Exception {
+    public static void main(String[] args) {
         ClientActions accion = new ClientActions();
         accion.start();
         ClientNetHandler.setAcciones(accion);

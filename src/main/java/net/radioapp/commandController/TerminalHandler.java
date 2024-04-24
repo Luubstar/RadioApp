@@ -3,6 +3,9 @@ package net.radioapp.commandController;
 import net.radioapp.InputHandler;
 import net.radioapp.commandController.actions.Action;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Scanner;
 
 public class TerminalHandler implements InputHandler {
@@ -37,15 +40,21 @@ public class TerminalHandler implements InputHandler {
     }
 
     @Override
-    public Action getAction() {
+    public Action[] getAction() {
         String res = Input.nextLine().toLowerCase();
-
-        String[] temp = res.split(" ");
-        res = temp[0];
-        String[] args = new String[temp.length-1];
-        System.arraycopy(temp, 1, args, 0, temp.length - 1);
-
-        return controlador.call(res, args);
+        String[] commands = StringUtils.splitCommands(res);
+        Action[] accionesResultado = new Action[commands.length];
+        int i = 0;
+        for(String command : commands) {
+            command = command.trim();
+            String[] temp = command.split(" ");
+            res = temp[0];
+            String[] args = new String[temp.length - 1];
+            System.arraycopy(temp, 1, args, 0, temp.length - 1);
+            accionesResultado[i] = controlador.call(res, args);
+            i++;
+        }
+        return accionesResultado;
     }
 
     @Override
@@ -67,4 +76,5 @@ public class TerminalHandler implements InputHandler {
     public CommandController getController() {
         return controlador;
     }
+
 }

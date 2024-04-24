@@ -31,8 +31,6 @@ public class ClientActions extends Thread{
 
             String command = new String(c, StandardCharsets.UTF_8).trim();
             //TODO: Creo que se está congelando cuando llegan muchas emisiones tras un finemision y congela el ping
-            System.out.println(type);
-            System.out.println(pos);
             switch (type) {
                 case INICIOEMISION:
                     //TODO: Leer los metadatos para crear la configuración

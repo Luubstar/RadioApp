@@ -59,11 +59,12 @@ public class ClientHandler {
             ActionHandler.log("Nuevo cliente conectado");
             new UDPEmitter(new UDPPacket(client,"Conectado satisfactoriamente".getBytes(), PackageTypes.LOG)).start();
         }
-
-
         if (type.equals(PackageTypes.MOVER)){
             command = command.split("move: ")[0];
-            client.setFrecuency(Double.parseDouble(command));
+            try {
+                client.setFrecuency(Double.parseDouble(command));
+            }
+            catch (NumberFormatException e){ActionHandler.log("Se ha recibido una frecuencia con un valor incorrecto por parte de un cliente " + command);}
         }
         else if (type.equals(PackageTypes.PING)){
             client.pingReceived();

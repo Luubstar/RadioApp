@@ -57,4 +57,11 @@ public class StringUtils {
         return costs[s2.length()];
     }
 
+    public static String[] splitCommands(String res){
+        if(res.contains("&&")){
+            return res.split("&&");
+        }
+        else {return new String[]{res};}
+    }
+
 }
