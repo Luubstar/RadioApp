@@ -37,7 +37,7 @@ public class ClientActions extends Thread{
                     p.setAudioFormat(format);
                     break;
                 case FINEMISION:
-                    System.out.println("finalizado");
+                    System.out.println("Paquetes recibidos");
                     p.collapse();
                     break;
                 case EMISION:

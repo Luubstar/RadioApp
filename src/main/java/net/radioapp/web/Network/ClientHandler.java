@@ -9,7 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ClientHandler {
-    public static final int MAX_LOSTED_PINGS = 100;
+    public static final int MAX_LOSTED_PINGS = 40;
     private static List<Client> clientes = new ArrayList<>();
     private static boolean online;
 
@@ -71,7 +71,6 @@ public class ClientHandler {
             client.pingReceived();
         }
         else if (type.equals(PackageTypes.SOLICITAREMISION)){
-            System.out.println("Pide paquete");
             client.setRequested(true);
         }
         else{

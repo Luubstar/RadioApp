@@ -55,26 +55,27 @@ public class Emision extends Thread{
 
             long temision = System.nanoTime();
 
+            broadcast(emisora.getActualTrack().getMetadata().getData(), escuchas, PackageTypes.INICIOEMISION);
             try{
                 long etime = System.nanoTime();
                 int sdif = (int) (etime - stime)/1000000000;
                 emisora.addSeconds(sdif + dx);
 
-                byte[] buffer = emisora.getSecondsFromAudio(SECONDSFOREMISSION*4);
+                byte[] buffer = emisora.getSecondsFromAudio(SECONDSFOREMISSION);
                 if(buffer.length % 4 != 0){
                     byte[] aux = new byte[buffer.length + buffer.length%4];
-                    System.arraycopy(aux, 0, buffer, 0, buffer.length);
+                    System.arraycopy(buffer, 0, aux, 0, buffer.length);
+                    buffer = aux;
                 }
-                broadcast(buffer, escuchas, PackageTypes.EMISION);
 
+                broadcast(buffer, escuchas, PackageTypes.EMISION);
 
                 broadcast(new byte[1], escuchas, PackageTypes.FINEMISION);
 
                 long eemision = System.nanoTime();
                 sdif = (int) (eemision - temision)/1000000;
-                int res = (SECONDSFOREMISSION * 4  * 1000)-sdif;
+                int res = (SECONDSFOREMISSION * 1000)-sdif;
                 dx = (float) res /1000;
-                System.out.println("Paquete enviado");
             }
             catch (Exception e){
                 ActionHandler.filterAction(new Action("", "Error emisor " + Arrays.toString(e.getStackTrace()) + "\n" + e.getMessage(), ActionType.QUIT));

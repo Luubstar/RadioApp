@@ -18,7 +18,7 @@ public class ClientPlayer extends  Thread{
     private boolean reading;
     AudioFormat nextFormat = getAudioFormat();
     AudioFormat oldFormat = getAudioFormat();
-    int SEGUNDOSPORCARGA = 3;
+    static boolean isPlaying = false;
 
     public ClientPlayer(){}
 
@@ -37,7 +37,6 @@ public class ClientPlayer extends  Thread{
         }
         entrada.clear();
         reading = false;
-        System.out.println(data.size());
     }
     public void play(){
         if(!running){running = true; this.start();}
@@ -46,34 +45,58 @@ public class ClientPlayer extends  Thread{
     @Override
     public void run() {
         try {
-            line = AudioSystem.getSourceDataLine(getAudioFormat());
+            line = AudioSystem.getSourceDataLine(nextFormat);
             line.close();
-            line.open(getAudioFormat());
+            line.open(nextFormat);
+            line.start();
+            isPlaying = false;
 
-            while (true) {
-                if (data.size() > 0) {
-                    if(nextFormat != oldFormat){
-                    line.close();
-                    line.open(nextFormat);
-                    line.start();}
+            while(true) {
+                if(data.size() > 0 && !isPlaying) {
+                    isPlaying = true;
+                    new Thread(() -> {
 
-                    while (reading){Thread.sleep(1);}
-                    reading = true;
-                    //TODO: HAY QUE IR CON CUIDADO CON QUE LA ESCRITURA NO SEA MODULO 4
-                    // TIENE UN PARCHE TEMPORAL
-                    byte[] val = extraer(SEGUNDOSPORCARGA*3);
-                    line.write(val,0, val.length);
-                    if(data.size() < SEGUNDOSPORCARGA*3){pedirMas();}
-                    line.drain();
-                    reading = false;
+                        int bufferSize = line.getBufferSize();
+                        int totalBytesRead = 0;
+                        int bytesReaded;
+                        boolean calledForMore = false;
+
+                        while (reading){
+                            try {
+                                Thread.sleep(1);
+                            } catch (InterruptedException e) {
+                                throw new RuntimeException(e);
+                            }
+                        }
+
+                        reading = true;
+                        byte[] buffer = data.toByteArray();
+                        data.reset();
+                        reading = false;
+
+                        while (totalBytesRead < buffer.length) {
+                            bytesReaded = line.write(buffer, totalBytesRead, Math.min(bufferSize, buffer.length - totalBytesRead));
+                            totalBytesRead += bytesReaded;
+
+                            if (totalBytesRead >= buffer.length){break;}
+                            else if (totalBytesRead >= buffer.length * 0.5 && !calledForMore) {
+                                calledForMore = true;
+                                pedirMas();
+                            }
+                            else if(totalBytesRead == 0){System.exit(-1);}
+                        }
+
+                        isPlaying = false;
+                        line.drain();
+                    }).start();
                 }
             }
 
         } catch (LineUnavailableException e) {
             e.printStackTrace();
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
         }
+
+        line.close();
     }
 
     public void setAudioFormat(AudioFormat f){
@@ -84,26 +107,6 @@ public class ClientPlayer extends  Thread{
     private void pedirMas(){
         ClientNetHandler.send(new UDPDataArray(new byte[]{0}), PackageTypes.SOLICITAREMISION);
         System.out.println("Pide paquete");
-    }
-
-    private byte[] extraer(int segundos){
-        int numBytesToExtract = (int) nextFormat.getSampleRate() * segundos;
-        byte[] originalBytes = data.toByteArray();
-        if ( numBytesToExtract > data.size()) {
-            numBytesToExtract = originalBytes.length;
-        }
-
-        // Crear un nuevo array de bytes para almacenar los bytes extraídos
-        byte[] extractedBytes = Arrays.copyOfRange(originalBytes, 0, numBytesToExtract);
-
-        // Crear un nuevo array de bytes para los bytes restantes
-        byte[] remainingBytes = Arrays.copyOfRange(originalBytes, numBytesToExtract, originalBytes.length);
-
-        // Crear un nuevo ByteArrayOutputStream con los bytes restantes
-        data = new ByteArrayOutputStream();
-        data.write(remainingBytes, 0, remainingBytes.length);
-
-        return extractedBytes;
     }
 
     private static AudioFormat getAudioFormat() {
