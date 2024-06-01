@@ -1,12 +1,12 @@
 package net.radioapp.client;
 
 
-import net.radioapp.web.emisor.Audio;
+import net.radioapp.web.Network.PackageTypes;
+import net.radioapp.web.Network.UDPDataArray;
 
 import javax.sound.sampled.*;
 import java.io.*;
-import java.util.Comparator;
-import java.util.PriorityQueue;
+import java.util.Arrays;
 import java.util.TreeMap;
 
 //TODO: Esto debería implementar una interfaz para hacerlo intercambiable
@@ -17,6 +17,8 @@ public class ClientPlayer extends  Thread{
     public static boolean running;
     private boolean reading;
     AudioFormat nextFormat = getAudioFormat();
+    AudioFormat oldFormat = getAudioFormat();
+    int SEGUNDOSPORCARGA = 3;
 
     public ClientPlayer(){}
 
@@ -47,20 +49,21 @@ public class ClientPlayer extends  Thread{
             line = AudioSystem.getSourceDataLine(getAudioFormat());
             line.close();
             line.open(getAudioFormat());
-            line.start();
 
             while (true) {
                 if (data.size() > 0) {
+                    if(nextFormat != oldFormat){
                     line.close();
                     line.open(nextFormat);
-                    line.start();
+                    line.start();}
+
                     while (reading){Thread.sleep(1);}
                     reading = true;
                     //TODO: HAY QUE IR CON CUIDADO CON QUE LA ESCRITURA NO SEA MODULO 4
                     // TIENE UN PARCHE TEMPORAL
-                    while(data.toByteArray().length % 4 != 0){data.write(0);}
-                    line.write(data.toByteArray(), 0, data.toByteArray().length);
-                    data.reset();
+                    byte[] val = extraer(SEGUNDOSPORCARGA*3);
+                    line.write(val,0, val.length);
+                    if(data.size() < SEGUNDOSPORCARGA*3){pedirMas();}
                     line.drain();
                     reading = false;
                 }
@@ -74,7 +77,33 @@ public class ClientPlayer extends  Thread{
     }
 
     public void setAudioFormat(AudioFormat f){
+        oldFormat = nextFormat;
        nextFormat = f;
+    }
+
+    private void pedirMas(){
+        ClientNetHandler.send(new UDPDataArray(new byte[]{0}), PackageTypes.SOLICITAREMISION);
+        System.out.println("Pide paquete");
+    }
+
+    private byte[] extraer(int segundos){
+        int numBytesToExtract = (int) nextFormat.getSampleRate() * segundos;
+        byte[] originalBytes = data.toByteArray();
+        if ( numBytesToExtract > data.size()) {
+            numBytesToExtract = originalBytes.length;
+        }
+
+        // Crear un nuevo array de bytes para almacenar los bytes extraídos
+        byte[] extractedBytes = Arrays.copyOfRange(originalBytes, 0, numBytesToExtract);
+
+        // Crear un nuevo array de bytes para los bytes restantes
+        byte[] remainingBytes = Arrays.copyOfRange(originalBytes, numBytesToExtract, originalBytes.length);
+
+        // Crear un nuevo ByteArrayOutputStream con los bytes restantes
+        data = new ByteArrayOutputStream();
+        data.write(remainingBytes, 0, remainingBytes.length);
+
+        return extractedBytes;
     }
 
     private static AudioFormat getAudioFormat() {

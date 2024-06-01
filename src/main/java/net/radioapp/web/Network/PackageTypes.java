@@ -11,7 +11,8 @@ public enum PackageTypes {
     LOCKVOLUMEN(7),
     LOCKFRECUENCIA(8),
     LOCKONOFF(9),
-    PING(10);
+    PING(10),
+    SOLICITAREMISION(11);
 
     final int bytevalue;
     PackageTypes(int bytevalue){

@@ -14,6 +14,7 @@ public class Client {
     private boolean isNew;
     private boolean waitingPing;
     private int lostedPings = 0;
+    private boolean requested = false;
 
     public Client(InetAddress address, double frecuency) {
         this.address = address;
@@ -52,6 +53,14 @@ public class Client {
     }
 
     public void pingLost(){lostedPings++;}
+
+    public boolean isRequested() {
+        return requested;
+    }
+
+    public void setRequested(boolean requested) {
+        this.requested = requested;
+    }
 
     @Override
     public String toString() {

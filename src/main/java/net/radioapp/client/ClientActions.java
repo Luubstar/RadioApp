@@ -1,15 +1,12 @@
 package net.radioapp.client;
 import net.radioapp.web.Network.PackageTypes;
 import net.radioapp.web.Network.UDPDataArray;
-import net.radioapp.web.emisor.AudioExtension;
 
 import javax.sound.sampled.AudioFormat;
 import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.UnsupportedAudioFileException;
 import java.io.*;
-import java.lang.reflect.Array;
 import java.nio.charset.StandardCharsets;
-import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.Queue;
 
@@ -54,7 +51,7 @@ public class ClientActions extends Thread{
                     System.out.println(command);
                     break;
                 case PING:
-                    System.out.println("Pingeando");
+                    //System.out.println("Pingeando");
                     ClientNetHandler.send(new UDPDataArray(), PackageTypes.PING);
                     break;
                 default:

@@ -14,7 +14,7 @@ import java.util.Arrays;
 import java.util.List;
 
 public class Emision extends Thread{
-    private final int SECONDSFOREMISSION = 4;
+    private final int SECONDSFOREMISSION = 5;
     Emisora emisora;
     public boolean connected = true;
     public Emision(Emisora fuente){
@@ -26,8 +26,9 @@ public class Emision extends Thread{
             List<Client> activos = new ArrayList<>(ClientHandler.getClientes());
             for(Client c : activos){
                 c.ping();
-                if (c.getFrecuency() == emisora.getFrecuency() && !clientes.contains(c)){
+                if (c.getFrecuency() == emisora.getFrecuency() && !clientes.contains(c) && c.isRequested()){
                     clientes.add(c);
+                    c.setRequested(false);
                 }
             }
             try {
@@ -59,7 +60,11 @@ public class Emision extends Thread{
                 int sdif = (int) (etime - stime)/1000000000;
                 emisora.addSeconds(sdif + dx);
 
-                byte[] buffer = emisora.getSecondsFromAudio(SECONDSFOREMISSION);
+                byte[] buffer = emisora.getSecondsFromAudio(SECONDSFOREMISSION*4);
+                if(buffer.length % 4 != 0){
+                    byte[] aux = new byte[buffer.length + buffer.length%4];
+                    System.arraycopy(aux, 0, buffer, 0, buffer.length);
+                }
                 broadcast(buffer, escuchas, PackageTypes.EMISION);
 
 
@@ -67,10 +72,9 @@ public class Emision extends Thread{
 
                 long eemision = System.nanoTime();
                 sdif = (int) (eemision - temision)/1000000;
-                int res = (SECONDSFOREMISSION * 1000)-sdif;
-                System.out.println(sdif);
-                try {Thread.sleep( res);} catch (InterruptedException e){throw new RuntimeException(e);}
+                int res = (SECONDSFOREMISSION * 4  * 1000)-sdif;
                 dx = (float) res /1000;
+                System.out.println("Paquete enviado");
             }
             catch (Exception e){
                 ActionHandler.filterAction(new Action("", "Error emisor " + Arrays.toString(e.getStackTrace()) + "\n" + e.getMessage(), ActionType.QUIT));

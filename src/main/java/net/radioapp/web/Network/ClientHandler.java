@@ -9,7 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ClientHandler {
-    public static final int MAX_LOSTED_PINGS = 5;
+    public static final int MAX_LOSTED_PINGS = 100;
     private static List<Client> clientes = new ArrayList<>();
     private static boolean online;
 
@@ -57,6 +57,7 @@ public class ClientHandler {
         if (type.equals(PackageTypes.HELO) || client.isNew()){
             client.turnNew();
             ActionHandler.log("Nuevo cliente conectado");
+            client.setRequested(true);
             new UDPEmitter(new UDPPacket(client,"Conectado satisfactoriamente".getBytes(), PackageTypes.LOG)).start();
         }
         if (type.equals(PackageTypes.MOVER)){
@@ -68,6 +69,10 @@ public class ClientHandler {
         }
         else if (type.equals(PackageTypes.PING)){
             client.pingReceived();
+        }
+        else if (type.equals(PackageTypes.SOLICITAREMISION)){
+            System.out.println("Pide paquete");
+            client.setRequested(true);
         }
         else{
             ActionHandler.log("Algo ha fallado");
