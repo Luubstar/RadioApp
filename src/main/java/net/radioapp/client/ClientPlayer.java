@@ -1,6 +1,8 @@
 package net.radioapp.client;
 
 
+import net.radioapp.web.emisor.Audio;
+
 import javax.sound.sampled.*;
 import java.io.*;
 import java.util.Comparator;
@@ -14,6 +16,7 @@ public class ClientPlayer extends  Thread{
     TreeMap<Integer, byte[]> entrada = new TreeMap<>();
     public static boolean running;
     private boolean reading;
+    AudioFormat nextFormat = getAudioFormat();
 
     public ClientPlayer(){}
 
@@ -48,6 +51,9 @@ public class ClientPlayer extends  Thread{
 
             while (true) {
                 if (data.size() > 0) {
+                    line.close();
+                    line.open(nextFormat);
+                    line.start();
                     while (reading){Thread.sleep(1);}
                     reading = true;
                     //TODO: HAY QUE IR CON CUIDADO CON QUE LA ESCRITURA NO SEA MODULO 4
@@ -65,6 +71,10 @@ public class ClientPlayer extends  Thread{
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    public void setAudioFormat(AudioFormat f){
+       nextFormat = f;
     }
 
     private static AudioFormat getAudioFormat() {

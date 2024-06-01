@@ -18,7 +18,7 @@ public class ClientUDPRecibe extends Thread{
             while (true) {
                 s.receive(pq);
                 //System.out.println(new UDPDataArray(pq.getData()).getType());
-                if (pq.getData().length > 0){
+                if (new UDPDataArray(pq.getData()).getType() != null){
                     ClientNetHandler.receive(pq.getData());
                 }
                 buffer = new byte[UDPDataArray.CHUNKSIZE];

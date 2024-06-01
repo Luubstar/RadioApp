@@ -53,8 +53,7 @@ public class Emision extends Thread{
             List<Client> escuchas = getclients();
 
             long temision = System.nanoTime();
-            //TODO: DESPLAZAR BROADCASTS A OTRO HILO
-            broadcast(emisora.getActualTrack().getMetadata().getData(), escuchas, PackageTypes.INICIOEMISION);
+
             try{
                 long etime = System.nanoTime();
                 int sdif = (int) (etime - stime)/1000000000;
@@ -64,7 +63,7 @@ public class Emision extends Thread{
                 broadcast(buffer, escuchas, PackageTypes.EMISION);
 
 
-                broadcast(new byte[0], escuchas, PackageTypes.FINEMISION);
+                broadcast(new byte[1], escuchas, PackageTypes.FINEMISION);
 
                 long eemision = System.nanoTime();
                 sdif = (int) (eemision - temision)/1000000;

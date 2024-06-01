@@ -1,11 +1,15 @@
 package net.radioapp.client;
 import net.radioapp.web.Network.PackageTypes;
 import net.radioapp.web.Network.UDPDataArray;
+import net.radioapp.web.emisor.AudioExtension;
 
+import javax.sound.sampled.AudioFormat;
 import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.UnsupportedAudioFileException;
 import java.io.*;
+import java.lang.reflect.Array;
 import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.Queue;
 
@@ -24,23 +28,23 @@ public class ClientActions extends Thread{
         try {
             UDPDataArray packet = new UDPDataArray(c);
             PackageTypes type = packet.getType();
-
-            int pos = UDPDataArray.byteToInt(packet.getData(2,5));
-
             c = packet.getContent();
-
             String command = new String(c, StandardCharsets.UTF_8).trim();
-            //TODO: Creo que se está congelando cuando llegan muchas emisiones tras un finemision y congela el ping
             switch (type) {
                 case INICIOEMISION:
-                    //TODO: Leer los metadatos para crear la configuración
                     System.out.println("Recibiendo canción");
+                    int samplerate = UDPDataArray.byteToInt(packet.getData(6,9));
+                    int sampleSizeInBits = UDPDataArray.byteToInt(packet.getData(10,13));
+                    int channels = UDPDataArray.byteToInt(packet.getData(14,18));
+                    AudioFormat format = new AudioFormat((float) samplerate, sampleSizeInBits, channels, true, false);
+                    p.setAudioFormat(format);
                     break;
                 case FINEMISION:
                     System.out.println("finalizado");
                     p.collapse();
                     break;
                 case EMISION:
+                    int pos = UDPDataArray.byteToInt(packet.getData(2,5));
                     p.addToPlay(c, pos);
                     break;
                 case MOVER:

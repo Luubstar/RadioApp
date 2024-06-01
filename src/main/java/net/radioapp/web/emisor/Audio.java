@@ -5,11 +5,10 @@ import net.radioapp.web.Network.UDPDataArray;
 import javax.sound.sampled.UnsupportedAudioFileException;
 import java.io.*;
 
-//SE ASUME QUE TODOS LOS ARCHIVOS TIENEN 2 CANALES, 16 BITS DE PROFUNDIDAD Y FRECUENCIA DE
-//41000. ESTO ES ASÍ PARA EVITAR ENVIAR MÁS DATOS
 public abstract class Audio {
     private final File archivo;
     private final int bytespersecond;
+
     public Audio(File a) throws UnsupportedAudioFileException, IOException {
         this.archivo = a;
         bytespersecond = Math.round((float) (16 * 2 * 44100) /8);
@@ -26,7 +25,7 @@ public abstract class Audio {
         return archivo;
     }
 
-    public UDPDataArray getMetadata() {return null;}
+    public UDPDataArray getMetadata(){return  null;}
 
     public byte[] getSeconds(int start, int duration) throws IOException {
         FileInputStream stream = new FileInputStream(archivo);

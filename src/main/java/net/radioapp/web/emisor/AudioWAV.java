@@ -13,7 +13,7 @@ public class AudioWAV extends Audio{
         9-12 -> Channels
      */
 
-    private int channels, sampleSizeInBits, sampleRate;
+    public int channels, sampleSizeInBits, sampleRate;
     protected AudioWAV(File a) throws UnsupportedAudioFileException, IOException {
         super(a);
         byte[] byteArray = new FileInputStream(getArchivo()).readAllBytes();
@@ -23,7 +23,6 @@ public class AudioWAV extends Audio{
         sampleRate = UDPDataArray.byteToIntLittleEndian(array.getData(24,27));
     }
 
-    @Override
     public UDPDataArray getMetadata(){
         UDPDataArray array = new UDPDataArray();
         array.addData(AudioExtension.WAV.getBytevalue());
