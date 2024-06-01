@@ -39,19 +39,6 @@ public class Emision extends Thread{
         return clientes;
     }
 
-    /*public void broadcast(byte[] b, List<Client> clientes, PackageTypes t) {
-        List<UDPEmitter> lista = new ArrayList<>();
-        for (Client c: clientes) {
-            UDPEmitter e;
-            if (b.length != 0) {e = new UDPEmitter(new UDPPacket(c, b, t));}
-            else {e = new UDPEmitter(new UDPPacket(c, t));}
-            e.start();
-            lista.add(e);
-        }
-        for(UDPEmitter a : lista){try {a.join();}catch (InterruptedException e){}}
-    }*/
-
-    //TODO: Testea bien este método nuevo
     public void broadcast(byte[] b, List<Client> clientes, PackageTypes t) {
         for (Client c: clientes) {
             Main.send(new UDPDataArray(b), t, c);
@@ -59,28 +46,30 @@ public class Emision extends Thread{
     }
 
     @Override
-    public void run() { //TODO: Lo del tiempo funciona como el culo
+    public void run() {
         float dx = 0;
         while (connected){
             long stime = System.nanoTime();
             List<Client> escuchas = getclients();
 
+            long temision = System.nanoTime();
+            //TODO: DESPLAZAR BROADCASTS A OTRO HILO
             broadcast(emisora.getActualTrack().getMetadata().getData(), escuchas, PackageTypes.INICIOEMISION);
             try{
                 long etime = System.nanoTime();
-                stime = System.nanoTime();
                 int sdif = (int) (etime - stime)/1000000000;
-                emisora.addSeconds(sdif + dx); //TODO: Preprocesar esto en la inicialización
+                emisora.addSeconds(sdif + dx);
 
                 byte[] buffer = emisora.getSecondsFromAudio(SECONDSFOREMISSION);
                 broadcast(buffer, escuchas, PackageTypes.EMISION);
 
-                broadcast(new byte[0], escuchas, PackageTypes.FINEMISION);
-                etime = System.nanoTime();
 
-                sdif = (int) (etime - stime)/1000000;
+                broadcast(new byte[0], escuchas, PackageTypes.FINEMISION);
+
+                long eemision = System.nanoTime();
+                sdif = (int) (eemision - temision)/1000000;
                 int res = (SECONDSFOREMISSION * 1000)-sdif;
-                if(res < 0){res = 0;}
+                System.out.println(sdif);
                 try {Thread.sleep( res);} catch (InterruptedException e){throw new RuntimeException(e);}
                 dx = (float) res /1000;
             }

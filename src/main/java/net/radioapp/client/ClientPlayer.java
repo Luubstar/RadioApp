@@ -32,6 +32,7 @@ public class ClientPlayer extends  Thread{
         }
         entrada.clear();
         reading = false;
+        System.out.println(data.size());
     }
     public void play(){
         if(!running){running = true; this.start();}

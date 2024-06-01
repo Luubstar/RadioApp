@@ -68,7 +68,6 @@ public class ClientHandler {
         }
         else if (type.equals(PackageTypes.PING)){
             client.pingReceived();
-            ActionHandler.log("Ping recibido");
         }
         else{
             ActionHandler.log("Algo ha fallado");

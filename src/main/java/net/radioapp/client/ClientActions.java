@@ -39,7 +39,6 @@ public class ClientActions extends Thread{
                 case FINEMISION:
                     System.out.println("finalizado");
                     p.collapse();
-                    p.play();
                     break;
                 case EMISION:
                     p.addToPlay(c, pos);
