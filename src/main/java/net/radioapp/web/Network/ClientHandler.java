@@ -10,7 +10,7 @@ import java.util.List;
 
 public class ClientHandler {
     public static final int MAX_LOSTED_PINGS = 40;
-    private static List<Client> clientes = new ArrayList<>();
+    private static final List<Client> clientes = new ArrayList<>();
     private static boolean online;
 
     private static boolean checkIfContains(InetAddress address){
@@ -67,10 +67,9 @@ public class ClientHandler {
         else if (type.equals(PackageTypes.PING)){
             client.pingReceived();
         }
-        else if (type.equals(PackageTypes.SOLICITAREMISION)){
+        else if (type.equals(PackageTypes.SOLICITAREMISION) || type.equals(PackageTypes.HELO)){
             client.setRequested(true);
         }
-        else if (type.equals(PackageTypes.HELO)){}//ignore
         else{
             ActionHandler.log("Algo ha fallado");
             ActionHandler.log(type.toString());

@@ -1,7 +1,5 @@
 package net.radioapp.web.emisor;
 
-import net.radioapp.web.Network.PackageTypes;
-
 public enum AudioExtension {
     WAV(1), MP3(2);
 
@@ -12,9 +10,6 @@ public enum AudioExtension {
 
     public byte getBytevalue() {
         return (byte) bytevalue;
-    }
-    public int getvalue() {
-        return bytevalue;
     }
     public static AudioExtension obtenerTipoPorCodigo(int codigo) {
         for (AudioExtension tipo : AudioExtension.values()) {

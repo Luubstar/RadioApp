@@ -7,19 +7,18 @@ import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.UnsupportedAudioFileException;
 import java.io.*;
 import java.nio.charset.StandardCharsets;
-import java.util.LinkedList;
 import java.util.Queue;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 public class ClientActions extends Thread{
-    Queue<byte[]> acciones = new LinkedList<>();
+    Queue<byte[]> acciones = new ConcurrentLinkedQueue<>();
     ClientPlayer p;
+    boolean running = true;
 
     public ClientActions() {
         this.p = new ClientPlayer();
         p.play();
     }
-
-    public void addAction(byte[] e){acciones.add(e);}
 
     public void filterAction(byte[] c) throws IOException, UnsupportedAudioFileException, LineUnavailableException, InterruptedException {
         try {
@@ -27,9 +26,9 @@ public class ClientActions extends Thread{
             PackageTypes type = packet.getType();
             c = packet.getContent();
             String command = new String(c, StandardCharsets.UTF_8).trim();
+
             switch (type) {
                 case INICIOEMISION:
-                    //System.out.println("Recibiendo canción");
                     int samplerate = UDPDataArray.byteToInt(packet.getData(6,9));
                     int sampleSizeInBits = UDPDataArray.byteToInt(packet.getData(10,13));
                     int channels = UDPDataArray.byteToInt(packet.getData(14,18));
@@ -37,7 +36,6 @@ public class ClientActions extends Thread{
                     p.setAudioFormat(format);
                     break;
                 case FINEMISION:
-                    //System.out.println("Paquetes recibidos");
                     p.collapse();
                     break;
                 case EMISION:
@@ -59,27 +57,33 @@ public class ClientActions extends Thread{
                     break;
             }
         }
-        catch (Exception e){e.printStackTrace(); System.out.println(e.getMessage()); throw new RuntimeException();}
+        catch (Exception e){System.out.println(e.getMessage()); throw new RuntimeException();}
     }
 
     public void move(){
         p.kill();
     }
 
+    public synchronized  void addAction(byte[] e){acciones.add(e); notify();}
     @Override
     public void run() {
-        while (true) {
-            if (!acciones.isEmpty()) {
-                try {
-                    if(acciones.peek() != null) {filterAction(acciones.poll());}
-                    else{acciones.poll();}
-                } catch (IOException | UnsupportedAudioFileException | LineUnavailableException | InterruptedException e) {
-                    throw new RuntimeException(e);
+        while (running) {
+            byte[] acc = null;
+            synchronized (this) {
+                if (!acciones.isEmpty() && acciones.peek() != null)  {acc = acciones.poll();}
+                else {
+                    try {
+                        wait();
+                    } catch (InterruptedException e) {
+                        throw new RuntimeException(e);
+                    }
                 }
-            } else {
+            }
+
+            if (acc != null){
                 try {
-                    Thread.sleep(10);
-                } catch (InterruptedException e) {
+                    filterAction(acc);
+                } catch (IOException | UnsupportedAudioFileException | LineUnavailableException | InterruptedException e) {
                     throw new RuntimeException(e);
                 }
             }

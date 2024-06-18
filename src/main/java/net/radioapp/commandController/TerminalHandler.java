@@ -3,9 +3,6 @@ package net.radioapp.commandController;
 import net.radioapp.InputHandler;
 import net.radioapp.commandController.actions.Action;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 import java.util.Scanner;
 
 public class TerminalHandler implements InputHandler {
@@ -22,23 +19,7 @@ public class TerminalHandler implements InputHandler {
     }
     @Override
     public void start() {
-        //TODO: Reactivar cuando sea necesario
-        /*System.out.print("¿Qué modo de conectividad desea? [P]reguntar, [S]iempre, [N]unca\n"+commandPrefix);
-        String res = Input.nextLine().toUpperCase();
-        while (!res.equals("P") && !res.equals("S") && !res.equals("N")){
-            System.out.print("¿Qué modo de conectividad desea? [P]reguntar, [S]iempre, [N]unca\n"+commandPrefix);
-            res = Input.nextLine().toUpperCase();
-        }
-
-        if(res.equals("P")){ Main.setConnectivityMode(Connectivity.ASK);}
-        else if(res.equals("N")){ Main.setConnectivityMode(Connectivity.NEVER);}
-        else{ Main.setConnectivityMode(Connectivity.ALWAYS);}*/
     }
-
-    public void startTyping(){
-        System.out.println(commandPrefix);
-    }
-
     @Override
     public Action[] getAction() {
         String res = Input.nextLine().toLowerCase();

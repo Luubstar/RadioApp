@@ -9,7 +9,7 @@ public abstract class Audio {
     private final File archivo;
     private final int bytespersecond;
 
-    public Audio(File a) throws UnsupportedAudioFileException, IOException {
+    public Audio(File a) {
         this.archivo = a;
         bytespersecond = Math.round((float) (16 * 2 * 44100) /8);
     }

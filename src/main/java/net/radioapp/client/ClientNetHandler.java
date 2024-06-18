@@ -30,7 +30,6 @@ public class ClientNetHandler {
         acciones.addAction(a);
     }
 
-
     public void setServer(InetAddress server) {
         this.server = server;
     }

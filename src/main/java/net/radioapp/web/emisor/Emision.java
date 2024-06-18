@@ -14,16 +14,17 @@ import java.util.Arrays;
 import java.util.List;
 
 public class Emision extends Thread{
-    private final int SECONDSFOREMISSION = 5;
     public Emisora emisora;
     public boolean connected = true;
     private boolean isPlaying = true;
     public Emision(Emisora fuente){
         this.emisora = fuente;
     }
+
     public List<Client> getclients(){
         List<Client> clientes = new ArrayList<>();
         while (clientes.isEmpty()){
+
             List<Client> activos = new ArrayList<>(ClientHandler.getClientes());
             for(Client c : activos){
                 c.ping();
@@ -42,25 +43,19 @@ public class Emision extends Thread{
     }
 
     public void broadcast(byte[] b, List<Client> clientes, PackageTypes t) {
-        for (Client c: clientes) {
-            Main.send(new UDPDataArray(b), t, c);
-        }
+        for (Client c: clientes) {Main.send(new UDPDataArray(b), t, c);}
     }
-
-
 
     @Override
     public void run() {
         float dx = 0;
         while (connected){
-            while(!isPlaying){
-                try {
-                    Thread.sleep(100);
-                } catch (InterruptedException e) {
-                    throw new RuntimeException(e);
+
+            synchronized (this){
+                if(!isPlaying){
+                    try {wait();} catch (InterruptedException e) {throw new RuntimeException(e);}
                 }
             }
-
 
             long stime = System.nanoTime();
             List<Client> escuchas = getclients();
@@ -72,6 +67,7 @@ public class Emision extends Thread{
                 int sdif = (int) (etime - stime)/1000000000;
                 emisora.addSeconds(sdif + dx);
 
+                int SECONDSFOREMISSION = 5;
                 byte[] buffer = emisora.getSecondsFromAudio(SECONDSFOREMISSION);
                 if(buffer.length % 4 != 0){
                     byte[] aux = new byte[buffer.length + buffer.length%4];
@@ -94,12 +90,9 @@ public class Emision extends Thread{
         }
     }
 
-    public boolean isPlaying() {
-        return isPlaying;
-    }
-
-    public void setPlaying(boolean playing) {
+    public synchronized void setPlaying(boolean playing) {
         isPlaying = playing;
+        notify();
     }
 
     public void kill(){connected = false;}

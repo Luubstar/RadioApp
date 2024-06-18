@@ -2,7 +2,6 @@ package net.radioapp.web.emisor;
 
 import net.radioapp.web.Network.UDPDataArray;
 
-import javax.sound.sampled.UnsupportedAudioFileException;
 import java.io.*;
 
 public class AudioWAV extends Audio{
@@ -12,9 +11,8 @@ public class AudioWAV extends Audio{
         5-8 -> SampleSizeInBits
         9-12 -> Channels
      */
-
     public int channels, sampleSizeInBits, sampleRate;
-    protected AudioWAV(File a) throws UnsupportedAudioFileException, IOException {
+    protected AudioWAV(File a) throws IOException {
         super(a);
         byte[] byteArray = new FileInputStream(getArchivo()).readAllBytes();
         UDPDataArray array = new UDPDataArray(byteArray);

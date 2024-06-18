@@ -22,9 +22,7 @@ public enum PackageTypes {
     public byte getBytevalue() {
         return (byte) bytevalue;
     }
-    public int getvalue() {
-        return bytevalue;
-    }
+
     public static PackageTypes obtenerTipoPorCodigo(int codigo) {
         for (PackageTypes tipo : PackageTypes.values()) {
             if (tipo.getBytevalue() == codigo) {

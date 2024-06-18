@@ -19,14 +19,14 @@ import java.util.stream.Stream;
 
 public class NetHandler implements WebHandler {
     private static final Path mainDir = Paths.get("./mainApp");
-    private static List<Path> groupsPaths = new ArrayList<>();
-    private static List<Path> emisorasPaths = new ArrayList<>();
-    private static List<Grupo> gruposList = new ArrayList<>();
-    private static List<Emisora> emisorasList = new ArrayList<>();
+    private static final List<Path> groupsPaths = new ArrayList<>();
+    private static final List<Path> emisorasPaths = new ArrayList<>();
+    private static final List<Grupo> gruposList = new ArrayList<>();
+    private static final List<Emisora> emisorasList = new ArrayList<>();
+    private static final List<Emision>  emisionesActivas = new ArrayList<>();
     private static Grupo grupoActual;
     private static UDPRecibe recibidor;
 
-    private List<Emision> emisionesActivas = new ArrayList<>();
 
     @Override
     public void initialize() throws IOException{

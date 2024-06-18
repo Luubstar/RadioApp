@@ -3,9 +3,6 @@ package net.radioapp.web.Network;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.charset.StandardCharsets;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
 
 public class UDPDataArray {
     byte[] data;
@@ -44,7 +41,7 @@ public class UDPDataArray {
     public byte[] getData(int start, int end){
         if(end < start){throw  new RuntimeException("Error al leer datos de un paquete: Fin antes que inicio");}
         byte[] res = new byte[end-start + 1];
-        for(int i = 0; i < res.length ; i++) {res[i] = data[i + start]; }
+        System.arraycopy(data, start, res, 0, res.length);
         return res;
     }
 

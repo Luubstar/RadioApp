@@ -6,42 +6,41 @@ import net.radioapp.web.Network.UDPDataArray;
 
 import javax.sound.sampled.*;
 import java.io.*;
-import java.util.Arrays;
 import java.util.TreeMap;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 //TODO: Esto debería implementar una interfaz para hacerlo intercambiable
 public class ClientPlayer extends  Thread{
-    SourceDataLine line;
-    ByteArrayOutputStream data = new ByteArrayOutputStream();
-    TreeMap<Integer, byte[]> entrada = new TreeMap<>();
-    public static boolean running;
-    public boolean reading;
-    AudioFormat nextFormat = getAudioFormat();
-    static boolean isPlaying = false;
+    protected SourceDataLine line;
+    protected ByteArrayOutputStream data = new ByteArrayOutputStream();
+    protected Lock lockLectura = new ReentrantLock();
+    private final TreeMap<Integer, byte[]> entrada = new TreeMap<>();
+    public boolean running;
+    private AudioFormat nextFormat = getAudioFormat();
+    protected boolean isPlaying = false;
     private boolean connected = true;
-    PlayerThread p;
+    private PlayerThread p;
 
     public ClientPlayer(){}
 
-    public synchronized void addToPlay(byte[] stream, int pos) throws IOException, InterruptedException {
-        while (reading){Thread.sleep(1);}
-        reading = true;
-        if(entrada.containsKey(pos)){collapse();}
-        entrada.put(pos, stream);
-        reading = false;
-    }
-    public synchronized void collapse() throws InterruptedException, IOException {
-        while (reading){Thread.sleep(1);}
-        reading = true;
-        while(!entrada.isEmpty()){
-            data.write(entrada.pollFirstEntry().getValue());
+    public synchronized void addToPlay(byte[] stream, int pos) throws IOException {
+        lockLectura.lock();
+        try {
+            if (entrada.containsKey(pos)) {collapse();}
+            entrada.put(pos, stream);
         }
-        entrada.clear();
-        reading = false;
+        finally {lockLectura.unlock(); }
     }
+
+    public synchronized void collapse() throws IOException {
+        lockLectura.lock();
+        try {while(!entrada.isEmpty()){data.write(entrada.pollFirstEntry().getValue());}}
+        finally {lockLectura.unlock();}
+    }
+
     public void play(){
-        if(!running){running = true;
-            connected = true; this.start();}
+        if(!running){running = true;connected = true; this.start();}
     }
 
     @Override
@@ -62,20 +61,13 @@ public class ClientPlayer extends  Thread{
             }
             kill();
 
-        } catch (LineUnavailableException e) {
-            e.printStackTrace();
-        }
-
+        } catch (LineUnavailableException e) {System.out.println(e.getStackTrace()); }
         line.close();
     }
 
-    public void setAudioFormat(AudioFormat f){
-       nextFormat = f;
-    }
+    public void setAudioFormat(AudioFormat f){nextFormat = f; }
 
-    public void pedirMas(){
-        ClientNetHandler.send(new UDPDataArray(new byte[]{0}), PackageTypes.SOLICITAREMISION);
-    }
+    public void pedirMas(){ClientNetHandler.send(new UDPDataArray(new byte[]{0}), PackageTypes.SOLICITAREMISION);}
 
     private static AudioFormat getAudioFormat() {
         float sampleRate = 48000;  // Ejemplo: 44.1 kHz

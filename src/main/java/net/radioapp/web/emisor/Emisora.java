@@ -13,7 +13,6 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Stream;
 
@@ -38,17 +37,17 @@ public class Emisora {
     }
 
     private void readFiles() throws IOException {
-        Stream<Path> files = Files.list(path);
-        files.filter(Files::isRegularFile).filter((e) -> !e.getFileName().toString().contains(".json")).forEach((e) ->
-        {
-            try {
-                Audio a = Audio.newAudio(e.toFile());
-                ficheros.add(a);
-            }
-            catch (UnsupportedAudioFileException | IOException ex) {
-                ActionHandler.handleException(ex, "Archivo de audio " + e.getFileName() + " no soportado");
-            }
-        });
+        try(Stream<Path> files = Files.list(path)){
+            files.filter(Files::isRegularFile).filter((e) -> !e.getFileName().toString().contains(".json")).forEach((e) ->
+            {
+                try {
+                    Audio a = Audio.newAudio(e.toFile());
+                    ficheros.add(a);
+                }
+                catch (UnsupportedAudioFileException | IOException ex) {
+                    ActionHandler.handleException(ex, "Archivo de audio " + e.getFileName() + " no soportado");}
+            });
+        }
     }
 
     public void addSeconds(float s){
