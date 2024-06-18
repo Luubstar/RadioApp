@@ -15,8 +15,9 @@ import java.util.List;
 
 public class Emision extends Thread{
     private final int SECONDSFOREMISSION = 5;
-    Emisora emisora;
+    public Emisora emisora;
     public boolean connected = true;
+    private boolean isPlaying = true;
     public Emision(Emisora fuente){
         this.emisora = fuente;
     }
@@ -46,13 +47,23 @@ public class Emision extends Thread{
         }
     }
 
+
+
     @Override
     public void run() {
         float dx = 0;
         while (connected){
+            while(!isPlaying){
+                try {
+                    Thread.sleep(100);
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+
+
             long stime = System.nanoTime();
             List<Client> escuchas = getclients();
-
             long temision = System.nanoTime();
 
             broadcast(emisora.getActualTrack().getMetadata().getData(), escuchas, PackageTypes.INICIOEMISION);
@@ -82,4 +93,14 @@ public class Emision extends Thread{
             }
         }
     }
+
+    public boolean isPlaying() {
+        return isPlaying;
+    }
+
+    public void setPlaying(boolean playing) {
+        isPlaying = playing;
+    }
+
+    public void kill(){connected = false;}
 }

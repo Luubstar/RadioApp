@@ -26,6 +26,8 @@ public class NetHandler implements WebHandler {
     private static Grupo grupoActual;
     private static UDPRecibe recibidor;
 
+    private List<Emision> emisionesActivas = new ArrayList<>();
+
     @Override
     public void initialize() throws IOException{
         //TODO: Configurar grupo actual y tal
@@ -56,6 +58,10 @@ public class NetHandler implements WebHandler {
         grupoActual = gruposList.getFirst();
         recibidor = new UDPRecibe();
         recibidor.start();
+        if(!ClientHandler.isOnline()){
+            ClientHandler.setOnline(true);
+            ActionHandler.log(Colors.Green.colorize("> Sistema iniciado"));}
+        else {ActionHandler.log(Colors.Red.colorize(" El sistema ya está iniciado"));}
     }
 
     public void checkIfHasStructure() throws  IOException{
@@ -69,12 +75,22 @@ public class NetHandler implements WebHandler {
     @Override
     public void start() {
         if(!ClientHandler.isOnline()){
-        ClientHandler.setOnline(true);
-        ActionHandler.log(Colors.Green.colorize("> Sistema iniciado"));}
-        else {ActionHandler.log(Colors.Red.colorize(" El sistema ya está iniciado"));}
+            ClientHandler.setOnline(true);
+        }
+        for(Emisora e : emisorasList){
+            boolean isPlaying = false;
+            for(Emision t : emisionesActivas){
+                if (e.getName().equals(t.emisora.getName())){isPlaying = true; break;}
+            }
+            if (!isPlaying){
+                Emision em = new Emision(e);
+                em.start();
+                emisionesActivas.add(em);
+            }
+        }
 
-        for (Emisora e : emisorasList){
-            new Emision(e).start();
+        for(Emision e : emisionesActivas){
+            e.setPlaying(true);
         }
     }
 
@@ -82,6 +98,9 @@ public class NetHandler implements WebHandler {
     public void stop() {
         if (ClientHandler.isOnline()) {
             ClientHandler.setOnline(false);
+            for(Emision e : emisionesActivas){
+                e.setPlaying(false);
+            }
             ActionHandler.log(Colors.Green.colorize(" Sistema parado"));
         }
         else{ActionHandler.log(Colors.Red.colorize(" El sistema ya está parado"));}
@@ -91,11 +110,16 @@ public class NetHandler implements WebHandler {
     public void restart() {
         ClientHandler.setOnline(false);
         recibidor.setCanRun(false);
+
+        for(Emision e : emisionesActivas){e.kill();}
+        emisionesActivas.clear();
+
         try{initialize();}
         catch (Exception e){ActionHandler.handleException(e, " Error en el reinicio del servicio de red");}
-        ClientHandler.setClientes(new ArrayList<>());
-        ClientHandler.setOnline(true);
-        ActionHandler.log(Colors.Green.colorize(" Sistema reiniciado"));
+        start();
+
+        ActionHandler.log(Colors.Green.colorize("Sistema reiniciado"));
+        System.out.println(emisionesActivas.getFirst().emisora.getFrecuency());
     }
 
     @Override

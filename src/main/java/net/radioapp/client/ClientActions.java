@@ -29,7 +29,7 @@ public class ClientActions extends Thread{
             String command = new String(c, StandardCharsets.UTF_8).trim();
             switch (type) {
                 case INICIOEMISION:
-                    System.out.println("Recibiendo canción");
+                    //System.out.println("Recibiendo canción");
                     int samplerate = UDPDataArray.byteToInt(packet.getData(6,9));
                     int sampleSizeInBits = UDPDataArray.byteToInt(packet.getData(10,13));
                     int channels = UDPDataArray.byteToInt(packet.getData(14,18));
@@ -37,7 +37,7 @@ public class ClientActions extends Thread{
                     p.setAudioFormat(format);
                     break;
                 case FINEMISION:
-                    System.out.println("Paquetes recibidos");
+                    //System.out.println("Paquetes recibidos");
                     p.collapse();
                     break;
                 case EMISION:
@@ -51,7 +51,6 @@ public class ClientActions extends Thread{
                     System.out.println(command);
                     break;
                 case PING:
-                    //System.out.println("Pingeando");
                     ClientNetHandler.send(new UDPDataArray(), PackageTypes.PING);
                     break;
                 default:
@@ -61,6 +60,10 @@ public class ClientActions extends Thread{
             }
         }
         catch (Exception e){e.printStackTrace(); System.out.println(e.getMessage()); throw new RuntimeException();}
+    }
+
+    public void move(){
+        p.kill();
     }
 
     @Override

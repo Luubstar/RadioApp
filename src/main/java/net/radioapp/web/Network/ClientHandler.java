@@ -33,10 +33,6 @@ public class ClientHandler {
         clientes.remove(c);
     }
 
-    public static void setClientes(List<Client> clientes) {
-        ClientHandler.clientes = clientes;
-    }
-
     private static Client getClient(InetAddress address){
         for(Client c:clientes){
             if (c.getAddress().equals(address)){return c;}
@@ -64,6 +60,7 @@ public class ClientHandler {
             command = command.split("move: ")[0];
             try {
                 client.setFrecuency(Double.parseDouble(command));
+                client.setRequested(true);
             }
             catch (NumberFormatException e){ActionHandler.log("Se ha recibido una frecuencia con un valor incorrecto por parte de un cliente " + command);}
         }
@@ -73,6 +70,7 @@ public class ClientHandler {
         else if (type.equals(PackageTypes.SOLICITAREMISION)){
             client.setRequested(true);
         }
+        else if (type.equals(PackageTypes.HELO)){}//ignore
         else{
             ActionHandler.log("Algo ha fallado");
             ActionHandler.log(type.toString());
@@ -94,6 +92,7 @@ public class ClientHandler {
     public static void moveAll(double f){
         for(Client c: getClientes()){
             c.setFrecuency(f);
+            c.setRequested(true);
         }
     }
 }

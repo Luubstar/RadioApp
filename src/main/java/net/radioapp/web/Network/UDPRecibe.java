@@ -20,23 +20,17 @@ class UDPRecibe extends Thread{
             byte[] buffer = new byte[UDPDataArray.CHUNKSIZE];
             DatagramPacket pq = new DatagramPacket(buffer, buffer.length);
             while (canRun) {
-                if(!ClientHandler.isOnline()){
-                    Thread.sleep(100);
-                }
-                else {
-                    try{
-                        s.receive(pq);
-                        ClientHandler.filterCommand(new UDPDataArray(pq.getData()), pq.getAddress());
+                try{
+                    s.receive(pq);
+                    ClientHandler.filterCommand(new UDPDataArray(pq.getData()), pq.getAddress());
 
-                        buffer = new byte[UDPDataArray.CHUNKSIZE];
-                        pq = new DatagramPacket(buffer, buffer.length);
-                    }
-                    catch (SocketTimeoutException ignored){}
-
+                    buffer = new byte[UDPDataArray.CHUNKSIZE];
+                    pq = new DatagramPacket(buffer, buffer.length);
                 }
+                catch (SocketTimeoutException ignored){}
             }
         }
-        catch (SocketException | InterruptedException ignored){}
+        catch (SocketException ignored){}
         catch (IOException e){
             ActionHandler.filterAction(new Action("Error recibidor", "Error recibiendo paquetes " + Arrays.toString(e.getStackTrace()) + " " + e.getCause(), ActionType.QUIT));
         }

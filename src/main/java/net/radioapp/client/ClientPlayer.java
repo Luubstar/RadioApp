@@ -15,10 +15,11 @@ public class ClientPlayer extends  Thread{
     ByteArrayOutputStream data = new ByteArrayOutputStream();
     TreeMap<Integer, byte[]> entrada = new TreeMap<>();
     public static boolean running;
-    private boolean reading;
+    public boolean reading;
     AudioFormat nextFormat = getAudioFormat();
-    AudioFormat oldFormat = getAudioFormat();
     static boolean isPlaying = false;
+    private boolean connected = true;
+    PlayerThread p;
 
     public ClientPlayer(){}
 
@@ -39,58 +40,27 @@ public class ClientPlayer extends  Thread{
         reading = false;
     }
     public void play(){
-        if(!running){running = true; this.start();}
+        if(!running){running = true;
+            connected = true; this.start();}
     }
 
     @Override
     public void run() {
         try {
             line = AudioSystem.getSourceDataLine(nextFormat);
-            line.close();
+            if(line.isActive()) {line.close();}
             line.open(nextFormat);
             line.start();
             isPlaying = false;
 
-            while(true) {
+            while(connected) {
                 if(data.size() > 0 && !isPlaying) {
                     isPlaying = true;
-                    new Thread(() -> {
-
-                        int bufferSize = line.getBufferSize();
-                        int totalBytesRead = 0;
-                        int bytesReaded;
-                        boolean calledForMore = false;
-
-                        while (reading){
-                            try {
-                                Thread.sleep(1);
-                            } catch (InterruptedException e) {
-                                throw new RuntimeException(e);
-                            }
-                        }
-
-                        reading = true;
-                        byte[] buffer = data.toByteArray();
-                        data.reset();
-                        reading = false;
-
-                        while (totalBytesRead < buffer.length) {
-                            bytesReaded = line.write(buffer, totalBytesRead, Math.min(bufferSize, buffer.length - totalBytesRead));
-                            totalBytesRead += bytesReaded;
-
-                            if (totalBytesRead >= buffer.length){break;}
-                            else if (totalBytesRead >= buffer.length * 0.5 && !calledForMore) {
-                                calledForMore = true;
-                                pedirMas();
-                            }
-                            else if(totalBytesRead == 0){System.exit(-1);}
-                        }
-
-                        isPlaying = false;
-                        line.drain();
-                    }).start();
+                    p = new PlayerThread(this);
+                    p.start();
                 }
             }
+            kill();
 
         } catch (LineUnavailableException e) {
             e.printStackTrace();
@@ -100,13 +70,11 @@ public class ClientPlayer extends  Thread{
     }
 
     public void setAudioFormat(AudioFormat f){
-        oldFormat = nextFormat;
        nextFormat = f;
     }
 
-    private void pedirMas(){
+    public void pedirMas(){
         ClientNetHandler.send(new UDPDataArray(new byte[]{0}), PackageTypes.SOLICITAREMISION);
-        System.out.println("Pide paquete");
     }
 
     private static AudioFormat getAudioFormat() {
@@ -119,4 +87,11 @@ public class ClientPlayer extends  Thread{
         return new AudioFormat(sampleRate, sampleSizeInBits, channels, signed, bigEndian);
     }
 
+    public void kill(){
+        if(p != null) { p.stopPlayer();}
+        p = null;
+        isPlaying = false;
+        data.reset();
+        entrada.clear();
+    }
 }
