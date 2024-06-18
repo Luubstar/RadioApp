@@ -53,14 +53,16 @@ public class ClientHandler {
         if (type.equals(PackageTypes.HELO) || client.isNew()){
             client.turnNew();
             ActionHandler.log("Nuevo cliente conectado");
-            client.setRequested(true);
+            client.setRequested();
             new UDPEmitter(new UDPPacket(client,"Conectado satisfactoriamente".getBytes(), PackageTypes.LOG)).start();
         }
+
         if (type.equals(PackageTypes.MOVER)){
             command = command.split("move: ")[0];
             try {
                 client.setFrecuency(Double.parseDouble(command));
-                client.setRequested(true);
+                client.setRequested();
+                NetHandler.assingClient(client);
             }
             catch (NumberFormatException e){ActionHandler.log("Se ha recibido una frecuencia con un valor incorrecto por parte de un cliente " + command);}
         }
@@ -68,7 +70,8 @@ public class ClientHandler {
             client.pingReceived();
         }
         else if (type.equals(PackageTypes.SOLICITAREMISION) || type.equals(PackageTypes.HELO)){
-            client.setRequested(true);
+            client.setRequested();
+            NetHandler.assingClient(client);
         }
         else{
             ActionHandler.log("Algo ha fallado");
@@ -91,7 +94,7 @@ public class ClientHandler {
     public static void moveAll(double f){
         for(Client c: getClientes()){
             c.setFrecuency(f);
-            c.setRequested(true);
+            c.setRequested();
         }
     }
 }

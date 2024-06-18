@@ -19,11 +19,13 @@ public class PlayerThread extends  Thread {
             byte[] buffer = player.data.toByteArray();
             player.data.reset();
 
-            while (totalBytesRead < buffer.length && !Thread.currentThread().isInterrupted() && canRun) {
-                bytesReaded = player.line.write(buffer, totalBytesRead, Math.min(bufferSize, buffer.length - totalBytesRead));
+            while (totalBytesRead < buffer.length && canRun) {
+                int read =  Math.min(bufferSize, buffer.length - totalBytesRead);
+                if(read % 4 != 0){read -= read%4; System.out.println("read extraño");}
+                bytesReaded = player.line.write(buffer, totalBytesRead, read);
                 totalBytesRead += bytesReaded;
 
-                if (totalBytesRead >= buffer.length) {
+                if (totalBytesRead >= buffer.length || read == 0) {
                     break;
                 } else if (totalBytesRead >= buffer.length * 0.5 && !calledForMore) {
                     calledForMore = true;
@@ -32,6 +34,7 @@ public class PlayerThread extends  Thread {
                     System.exit(-1);
                 }
             }
+            player.pedirMas();
         }
         finally {player.lockLectura.unlock();}
 

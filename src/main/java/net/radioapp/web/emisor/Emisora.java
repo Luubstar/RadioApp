@@ -50,6 +50,10 @@ public class Emisora {
         }
     }
 
+    public float getTime() {
+        return time;
+    }
+
     public void addSeconds(float s){
         time += s;
         int songduration = (int) actualTrack.getArchivo().length() / actualTrack.getBytespersecond();

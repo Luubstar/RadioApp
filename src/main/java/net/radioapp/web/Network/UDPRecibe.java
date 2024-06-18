@@ -24,8 +24,7 @@ class UDPRecibe extends Thread{
 
                     buffer = new byte[UDPDataArray.CHUNKSIZE];
                     pq = new DatagramPacket(buffer, buffer.length);
-                } catch (SocketTimeoutException ignored) {
-                }
+                } catch (SocketTimeoutException ignored) {}
             }
         }
         catch (IOException e){

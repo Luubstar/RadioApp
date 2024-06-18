@@ -27,7 +27,6 @@ public class NetHandler implements WebHandler {
     private static Grupo grupoActual;
     private static UDPRecibe recibidor;
 
-
     @Override
     public void initialize() throws IOException{
         //TODO: Configurar grupo actual y tal
@@ -74,13 +73,12 @@ public class NetHandler implements WebHandler {
 
     @Override
     public void start() {
-        if(!ClientHandler.isOnline()){
-            ClientHandler.setOnline(true);
-        }
+        if(!ClientHandler.isOnline()){ClientHandler.setOnline(true);}
+
         for(Emisora e : emisorasList){
             boolean isPlaying = false;
             for(Emision t : emisionesActivas){
-                if (e.getName().equals(t.emisora.getName())){isPlaying = true; break;}
+                if (e.getName().equals(t.getEmisora().getName())){isPlaying = true; break;}
             }
             if (!isPlaying){
                 Emision em = new Emision(e);
@@ -89,9 +87,7 @@ public class NetHandler implements WebHandler {
             }
         }
 
-        for(Emision e : emisionesActivas){
-            e.setPlaying(true);
-        }
+        for(Emision e : emisionesActivas){e.setPlaying(true);}
     }
 
     @Override
@@ -119,7 +115,7 @@ public class NetHandler implements WebHandler {
         start();
 
         ActionHandler.log(Colors.Green.colorize("Sistema reiniciado"));
-        System.out.println(emisionesActivas.getFirst().emisora.getFrecuency());
+        System.out.println(emisionesActivas.getFirst().getEmisora().getFrecuency());
     }
 
     @Override
@@ -131,6 +127,20 @@ public class NetHandler implements WebHandler {
 
     public void send(UDPDataArray arg, PackageTypes t, Client c){
         new UDPEmitter(new UDPPacket(c, arg.getData(), t)).start();
+    }
+
+    public static void assingClient(Client c){
+        if(c.getEmisora() != null){
+            if(c.getEmisora().getEmisora().getFrecuency() == c.getFrecuency() && c.getEmisora().containsClient(c)){return;}
+            c.getEmisora().removeClient(c);
+        }
+
+        for(Emision a : emisionesActivas){if(a.getEmisora().getFrecuency() == c.getFrecuency()){
+            a.addClient(c);
+            c.setEmisora(a);
+            c.setRequested();
+        }}
+
     }
 
     @Override

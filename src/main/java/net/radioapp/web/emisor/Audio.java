@@ -28,11 +28,39 @@ public abstract class Audio {
     public UDPDataArray getMetadata(){return  null;}
 
     public byte[] getSeconds(int start, int duration) throws IOException {
-        FileInputStream stream = new FileInputStream(archivo);
-        if(start * bytespersecond > 0){stream.skip((start * bytespersecond));}
-        byte[] buffer = new byte[(int) (duration * bytespersecond)];
-        stream.read(buffer);
-        return buffer;
+        FileInputStream stream = null;
+        try {
+            stream = new FileInputStream(archivo);
+
+            // Saltar al punto de inicio
+            long skipBytes = start * bytespersecond;
+            if (skipBytes > 0) {
+                stream.skip(skipBytes);
+            }
+
+            // Calcular la longitud correcta, redondeando hacia arriba al siguiente múltiplo de 4
+            int len = duration * bytespersecond;
+            if (len % 4 != 0) {
+                len = ((len / 4) + 1) * 4;
+            }
+
+            // Leer los datos
+            byte[] buffer = new byte[len];
+            int bytesRead = stream.read(buffer);
+
+            // Ajustar el tamaño del buffer si no se leyeron suficientes bytes
+            if (bytesRead < len) {
+                byte[] adjustedBuffer = new byte[bytesRead];
+                System.arraycopy(buffer, 0, adjustedBuffer, 0, bytesRead);
+                return adjustedBuffer;
+            }
+
+            return buffer;
+        } finally {
+            if (stream != null) {
+                stream.close();
+            }
+        }
     }
 
     public int getBytespersecond() {
