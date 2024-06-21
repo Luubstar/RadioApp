@@ -13,19 +13,19 @@ import net.radioapp.web.Network.NetHandler;
 import net.radioapp.web.Network.UDPDataArray;
 
 import java.io.IOException;
+import java.util.Objects;
 
 public class Main {
     private static final InputHandler manejador = new TerminalHandler();
     private static final WebHandler net = new NetHandler();
-
     private static boolean lockedOn, lockedVolume, lockedFrecuency;
     private static String emittingGroup;
 
-
     public static void main(String[] args) throws IOException {
         manejador.initialize();
-        ActionHandler.start(manejador);
+        ActionHandler.start(manejador,net);
         net.initialize();
+
         manejador.start();
         net.start();
         start();
@@ -42,21 +42,13 @@ public class Main {
     }
 
     public static void filterAction(Action a){
-        switch (a.getType()) {
-            case ActionType.SET:
-                filterSetters(a);
-                break;
-            case ActionType.WEB:
-                net.filterAction(a);
-                break;
-            case ActionType.STATE:
-                net.getState();
-                break;
-            default:
-                ActionHandler.filterAction(a);
-                break;
+        if (Objects.requireNonNull(a.getType()) == ActionType.SET) {
+            filterSetters(a);
+        } else {
+            ActionHandler.filterAction(a);
         }
     }
+
     public static void filterSetters(Action action){
         if (action.getName().equals(new LockFrecuency().getName())){Main.setLockedFrecuency(!Main.isLockedFrecuency());}
         else if (action.getName().equals(new LockOnOff().getName())){Main.setLockedOn(!Main.isLockedOn());}

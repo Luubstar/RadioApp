@@ -4,20 +4,19 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class EmisorJSONObject {
     private final int version;
-    private final double frecuency;
+    private final double frequency;
 
     public EmisorJSONObject() {
-
         this.version = 1;
-        this.frecuency = 50;
+        this.frequency = 50;
     }
     @JsonProperty("version")
     public int getVersion() {
         return version;
     }
 
-    @JsonProperty("frecuency")
-    public double getFrecuency() {
-        return frecuency;
+    @JsonProperty("frequency")
+    public double getFrequency() {
+        return frequency;
     }
 }

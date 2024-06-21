@@ -30,6 +30,10 @@ public class CommandController {
         register(new LockVolume());
         register(new LockOnOff());
         register(new SetFrecuencyCommand());
+        register(new StationsCommand());
+        register(new SkipSongCommand());
+        register(new ChangeGroupCommand());
+        register(new GroupsCommand());
     }
 
     private void register(Command c){comandos.add(c);}
@@ -37,7 +41,7 @@ public class CommandController {
     public Action call(String s, String[] args){
         Command r = findClosestCommand(s);
         if (r != null){return r.call(args);}
-        else{return  new Action("No se encontró el comando " + s, "error", ActionType.ERROR);}
+        else{return  new Action("error", "No se encontró el comando '" + s + "', usa 'help' para ver la ayuda", ActionType.ERROR);}
     }
 
     public String getHelpCommands(){
@@ -51,6 +55,7 @@ public class CommandController {
         }
         return res.toString();
     }
+
     public String getHelpCommands(String s){
         StringBuilder res = new StringBuilder().append("\n");
         Command c = findClosestCommand(s);

@@ -1,8 +1,10 @@
 package net.radioapp.web.Network;
 
+import net.radioapp.Main;
 import net.radioapp.commandController.actions.ActionHandler;
 import net.radioapp.WebHandler;
 import net.radioapp.commandController.actions.Action;
+import net.radioapp.commandController.actions.ActionType;
 import net.radioapp.web.Client;
 import net.radioapp.web.emisor.Emision;
 import net.radioapp.web.emisor.Emisora;
@@ -14,22 +16,22 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Stream;
 
 public class NetHandler implements WebHandler {
     private static final Path mainDir = Paths.get("./mainApp");
-    private static final List<Path> groupsPaths = new ArrayList<>();
     private static final List<Path> emisorasPaths = new ArrayList<>();
+    private static final List<Path> groupsPaths = new ArrayList<>();
     private static final List<Grupo> gruposList = new ArrayList<>();
     private static final List<Emisora> emisorasList = new ArrayList<>();
     private static final List<Emision>  emisionesActivas = new ArrayList<>();
     private static Grupo grupoActual;
-    private static UDPRecibe recibidor;
+    private UDPRecibe recibidor;
 
     @Override
     public void initialize() throws IOException{
-        //TODO: Configurar grupo actual y tal
         groupsPaths.clear();
         emisorasPaths.clear();
         gruposList.clear();
@@ -39,15 +41,16 @@ public class NetHandler implements WebHandler {
         paths.filter(Files::isDirectory).forEach(groupsPaths::add);
 
         for(Path p : groupsPaths){
+            emisorasPaths.clear();
             Stream<Path> emisoras = Files.list(p);
             emisoras.filter(Files::isDirectory).forEach(emisorasPaths::add);
             List<Emisora> temp = new ArrayList<>();
 
             for(Path e: emisorasPaths){
-                Emisora emisor = new Emisora(e.getFileName().toString(), e);
-                temp.add(emisor);
-                emisorasList.add(emisor);
-                emisor.readConfigFile();
+                Emisora emisora = new Emisora(e.getFileName().toString(), e);
+                temp.add(emisora);
+                emisorasList.add(emisora);
+                emisora.readConfigFile();
             }
 
             Grupo g = new Grupo(p.getFileName().toString(), p, temp);
@@ -74,8 +77,7 @@ public class NetHandler implements WebHandler {
     @Override
     public void start() {
         if(!ClientHandler.isOnline()){ClientHandler.setOnline(true);}
-
-        for(Emisora e : emisorasList){
+        for(Emisora e : grupoActual.getEmisoras()){
             boolean isPlaying = false;
             for(Emision t : emisionesActivas){
                 if (e.getName().equals(t.getEmisora().getName())){isPlaying = true; break;}
@@ -131,16 +133,15 @@ public class NetHandler implements WebHandler {
 
     public static void assingClient(Client c){
         if(c.getEmisora() != null){
-            if(c.getEmisora().getEmisora().getFrequency() == c.getFrecuency() && c.getEmisora().containsClient(c)){return;}
+            if(c.getEmisora().getEmisora().getFrequency() == c.getFrequency() && c.getEmisora().containsClient(c)){return;}
             c.getEmisora().removeClient(c);
         }
 
-        for(Emision a : emisionesActivas){if(a.getEmisora().getFrequency() == c.getFrecuency()){
+        for(Emision a : emisionesActivas){if(a.getEmisora().getFrequency() == c.getFrequency()){
             a.addClient(c);
             c.setEmisora(a);
             c.setRequested();
         }}
-
     }
 
     @Override
@@ -172,12 +173,80 @@ public class NetHandler implements WebHandler {
     }
 
     public void getState(){
-        StringBuilder r = new StringBuilder("Mostrando los clientes:\n");
-
-        for (Client c: ClientHandler.getClientes()){
-            r.append("> ").append(c.toString()).append("\n");
-        }
-
+        StringBuilder r = new StringBuilder("\nMostrando los clientes:\n");
+        for (Client c: ClientHandler.getClientes()){r.append("> ").append(c.toString()).append("\n");}
         ActionHandler.log(r.toString());
     }
+    public void getStations(){
+        StringBuilder r = new StringBuilder("\nMostrando las estaciones del grupo " + grupoActual.getName() + ":\n");
+        int i = 0;
+        for (Emision c: emisionesActivas){
+            String index = Colors.Yellow.colorize("[" + i + "]");
+            r.append("> ").append(index).append(" ").append(c.toString()).append("\n");
+            i++;
+        }
+        ActionHandler.log(r.toString());
+    }
+    public void getGroups(){
+        StringBuilder r = new StringBuilder("\nMostrando los grupos: \n");
+        int i = 0;
+        for (Grupo c: gruposList){
+            String index = Colors.Yellow.colorize("[" + i + "]");
+            String data = c.toString();
+            if(grupoActual.equals(c)){
+                index = Colors.Bold.and(Colors.Italic).and(Colors.Underline).colorize(index);
+                data  = Colors.Bold.and(Colors.Italic).and(Colors.Underline).colorize(data);
+            }
+            i++;
+            r.append("> ").append(index).append(" ").append(data).append("\n");
+
+        }
+        ActionHandler.log(r.toString());
+    }
+
+    public void selectGroup(int index){
+        if(index >= gruposList.size()){
+            ActionHandler.filterAction(
+                    new Action("error", "El grupo " + index +
+                            " no existe, revisa el comando groups para ver los indices ", ActionType.ERROR));
+        }
+        else{
+            grupoActual.reset();
+            String oln = Colors.Blue.colorize(getGrupoActual().getName());
+            grupoActual = gruposList.get(index);
+
+            for(Emision e : emisionesActivas){e.kill();}
+            emisionesActivas.clear();
+
+            for(Emisora a : grupoActual.emisoras){
+                System.out.println(a.getName());
+                Emision em = new Emision(a);
+                em.start();
+                emisionesActivas.add(em);
+            }
+            ClientHandler.reasingClients();
+
+            send(new UDPDataArray(), PackageTypes.CAMBIODEGRUPO);
+            ActionHandler.filterAction(new Action("OK", "El grupo ha sido cambiado de forma exitosa:\n"
+                    + oln + " -> " + Colors.Blue.colorize(grupoActual.getName()) +"\n",
+                    ActionType.LOG));
+        }
+    }
+
+    public void skipSong(int index){
+        if(index >= emisionesActivas.size()){
+            ActionHandler.filterAction(
+                    new Action("error", "La estación " + index +
+                            " no existe, revisa el comando stations para ver los indices ", ActionType.ERROR));
+        }
+        else{
+            String oln = Colors.Blue.colorize(emisionesActivas.get(index).getEmisora().getAudioName());
+            emisionesActivas.get(index).getEmisora().changeSong();
+            ActionHandler.filterAction(new Action("OK", "La canción ha sido saltada de forma exitosa:\n"
+                    + oln + " -> " + Colors.Blue.colorize(emisionesActivas.get(index).getEmisora().getAudioName()) +"\n",
+                    ActionType.LOG));
+        }
+    }
+
+    public static Grupo getGrupoActual(){return grupoActual;}
 }

@@ -1,15 +1,19 @@
 package net.radioapp.commandController.actions;
 
 import net.radioapp.InputHandler;
+import net.radioapp.WebHandler;
+import net.radioapp.web.Network.NetHandler;
 
 import java.util.Arrays;
 
 public class ActionHandler {
 
     private static InputHandler manejador;
+    private static WebHandler net;
 
-    public static void start(InputHandler m){
+    public static void start(InputHandler m, WebHandler n){
         manejador = m;
+        net = n;
     }
     public static void filterAction(Action action){
         switch (action.getType()){
@@ -28,6 +32,23 @@ public class ActionHandler {
             case HELPARG:
                 manejador.log(getHelpCommands(action.getRes()));
                 break;
+            case WEB:
+                net.filterAction(action);
+                break;
+            case STATE:
+                net.getState();
+                break;
+            case SHOWSTATIONS:
+                net.getStations();
+                break;
+            case SKIPSONG:
+                net.skipSong(Integer.parseInt(action.getRes()));
+                break;
+            case SHOWGROUPS:
+                net.getGroups();
+                break;
+            case CHANGEGROUP:
+                net.selectGroup(Integer.parseInt(action.getRes()));
         }
     }
 
@@ -43,7 +64,7 @@ public class ActionHandler {
                 "\n" + Arrays.toString(e.getStackTrace());
         manejador.error(b);
     }
-    public static void log(String c){
-        filterAction(new Action("", c, ActionType.LOG));
-    }
+    public static void log(String c){filterAction(new Action("", c, ActionType.LOG));}
+    public static void logError(String c){filterAction(new Action("", c, ActionType.ERROR));}
+
 }

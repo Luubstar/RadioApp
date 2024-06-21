@@ -9,11 +9,14 @@ import java.util.List;
 
 public abstract class Audio {
     private final File archivo;
-    private static final int CHUNCKSIZE = (1024*1024);
+    public static final int CHUNCKSIZE = (1024*1024);
     private List<byte[]> data = new ArrayList<>();
+    private String name;
 
+    public int channels, sampleSizeInBits, sampleRate;
     public Audio(File a) {
         this.archivo = a;
+        this.name = a.getName();
     }
 
     public void load(){
@@ -63,5 +66,5 @@ public abstract class Audio {
         throw new UnsupportedAudioFileException();
     }
 
-
+    public String getName() { return name; }
 }

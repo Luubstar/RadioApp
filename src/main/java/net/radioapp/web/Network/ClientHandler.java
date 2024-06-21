@@ -52,30 +52,48 @@ public class ClientHandler {
 
         if (type.equals(PackageTypes.HELO) || client.isNew()){
             client.turnNew();
+            client.setFrequency(NetHandler.getGrupoActual().getDefaultFrequency());
             ActionHandler.log("Nuevo cliente escuchando");
-            client.setRequested();
             new UDPEmitter(new UDPPacket(client,"Conectado satisfactoriamente".getBytes(), PackageTypes.LOG)).start();
         }
 
-        if (type.equals(PackageTypes.MOVER)){
-            command = command.split("move: ")[0];
-            try {
-                client.setFrecuency(Double.parseDouble(command));
-                client.setRequested();
+        switch (type) {
+            case MOVER:
+                command = command.split("move: ")[0];
+                try {
+                    double val = Double.parseDouble(command);
+                    if (val > NetHandler.getGrupoActual().getMaxFrequency() ||
+                            val < NetHandler.getGrupoActual().getMinFrequency()){throw new ArithmeticException();}
+                    client.setFrequency(val);
+                    NetHandler.assingClient(client);
+                    client.setRequested();
+                } catch (NumberFormatException e) {
+                    ActionHandler.logError("Se ha recibido una frecuencia con un valor incorrecto por parte de un cliente: " + command);
+                }
+                catch (ArithmeticException e){
+                    ActionHandler.logError("Se ha recibido una frecuencia con un valor fuera del margen indicado por parte de un cliente: " + command);
+                }
+                break;
+            case HELO:
+            case PING:
+                client.pingReceived();
+                break;
+            case SOLICITAREMISION:
                 NetHandler.assingClient(client);
-            }
-            catch (NumberFormatException e){ActionHandler.log("Se ha recibido una frecuencia con un valor incorrecto por parte de un cliente " + command);}
+                client.setRequested();
+                break;
+            default:
+                ActionHandler.log("Algo ha fallado");
+                ActionHandler.log(type.toString());
+                break;
         }
-        else if (type.equals(PackageTypes.PING)){
-            client.pingReceived();
-        }
-        else if (type.equals(PackageTypes.SOLICITAREMISION) || type.equals(PackageTypes.HELO)){
-            client.setRequested();
-            NetHandler.assingClient(client);
-        }
-        else{
-            ActionHandler.log("Algo ha fallado");
-            ActionHandler.log(type.toString());
+    }
+
+    public static void reasingClients(){
+        for(Client c : clientes){
+            c.setFrequency(NetHandler.getGrupoActual().getDefaultFrequency());
+            NetHandler.assingClient(c);
+            c.setRequested();
         }
     }
 
@@ -93,7 +111,7 @@ public class ClientHandler {
 
     public static void moveAll(double f){
         for(Client c: getClientes()){
-            c.setFrecuency(f);
+            c.setFrequency(f);
             c.setRequested();
         }
     }

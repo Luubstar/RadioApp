@@ -12,13 +12,13 @@ import java.net.InetAddress;
 public class Client {
     private Emision emisora;
     private final InetAddress address;
-    private double frecuency;
+    private double frequency;
     private boolean isNew;
     private boolean waitingPing;
     private int lostedPings = 0;
-    public Client(InetAddress address, double frecuency) {
+    public Client(InetAddress address, double frequency) {
         this.address = address;
-        this.frecuency = frecuency;
+        this.frequency = frequency;
         this.isNew = true;
     }
 
@@ -31,12 +31,12 @@ public class Client {
         return address;
     }
 
-    public double getFrecuency() {
-        return frecuency;
+    public double getFrequency() {
+        return frequency;
     }
 
-    public void setFrecuency(double frecuency) {
-        this.frecuency = frecuency;
+    public void setFrequency(double frequency) {
+        this.frequency = frequency;
     }
 
     public Emision getEmisora() {
@@ -48,7 +48,7 @@ public class Client {
     }
 
     public void pingReceived(){lostedPings = 0; waitingPing = false;}
-    public synchronized  void ping() {
+    public synchronized void ping() {
         if(waitingPing){
             pingLost();
             if (lostedPings >= ClientHandler.MAX_LOSTED_PINGS){
@@ -70,6 +70,6 @@ public class Client {
 
     @Override
     public String toString() {
-        return address + " -> " + frecuency + " MHz" + " / Ping losts -> " + lostedPings;
+        return address + " -> " + frequency + " MHz" + " / Ping losts -> " + lostedPings;
     }
 }

@@ -10,7 +10,6 @@ public class AudioWAV extends Audio{
         5-8 -> SampleSizeInBits
         9-12 -> Channels
      */
-    public int channels, sampleSizeInBits, sampleRate;
     protected AudioWAV(File a) throws IOException {
         super(a);
         byte[] byteArray = new FileInputStream(getArchivo()).readAllBytes();

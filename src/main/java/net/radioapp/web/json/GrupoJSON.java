@@ -9,8 +9,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 
 public class GrupoJSON{
-
-    public static final int GRUPOVERSION = 1;
+    public static final int GRUPOVERSION = 2;
     public static void create(Path url, GrupoJSONObject obj) throws IOException {
         ObjectMapper mapper = new ObjectMapper();
         mapper.writeValue(url.toFile(), obj);

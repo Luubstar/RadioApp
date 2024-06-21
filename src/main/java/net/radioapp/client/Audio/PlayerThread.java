@@ -46,11 +46,11 @@ public class PlayerThread extends  Thread {
                 }
             }
             if (!calledForMore) {player.pedirMas();}
-
             data = null;
             canRun = false;
         }
     }
+
     public synchronized void execute(byte[] d){
         data = new byte[d.length + oldData.length];
         System.arraycopy(oldData, 0, data, 0, oldData.length);

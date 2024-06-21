@@ -52,6 +52,10 @@ public class ClientActions extends Thread{
                 case PING:
                     ClientNetHandler.send(new UDPDataArray(), PackageTypes.PING);
                     break;
+                case CAMBIODEGRUPO:
+                    System.out.println("Cambio de grupo de emisoras");
+                    p.kill();
+                    break;
                 default:
                     System.out.println("Algo ha fallado");
                     System.out.println(type);

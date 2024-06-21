@@ -16,4 +16,8 @@ public interface WebHandler {
     void send(UDPDataArray arg, PackageTypes t, Client c);
     void filterAction(Action action);
     void getState();
+    void getStations();
+    void getGroups();
+    void selectGroup(int index);
+    void skipSong(int index);
 }

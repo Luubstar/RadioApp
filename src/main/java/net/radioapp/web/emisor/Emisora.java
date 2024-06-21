@@ -30,8 +30,14 @@ public class Emisora {
         this.name = name;
         try{
             readFiles();
-            changeSong();
-            actualTrack.load();
+            if(files.isEmpty()){ActionHandler.filterAction(
+                    new Action("error", "La emisora " + name + " no contiene canciones, cerrando programa.", ActionType.ERROR));
+                    System.exit(-1);
+            }
+            else{
+                changeSong();
+                actualTrack.load();
+            }
         }
         catch (IOException e){
             ActionHandler.handleException(e, "Fallo al leer los ficheros en la creación de las emisoras");
@@ -52,7 +58,18 @@ public class Emisora {
         }
     }
 
-    private void changeSong(){
+    public void addSeconds(int segundos){
+        int bytes_segundo = actualTrack.sampleRate * actualTrack.channels * actualTrack.sampleSizeInBits/8;
+        int desplazados = bytes_segundo * segundos;
+        int chuncksDesplazados = (int) Math.ceil((double) desplazados / Audio.CHUNCKSIZE);
+        actualTrack.load();
+        while (chuncksDesplazados > 0){
+            getNextChunk();
+            chuncksDesplazados--;
+        }
+    }
+
+    public void changeSong(){
         Audio oldTrack = actualTrack;
         currentChunk = 0;
 
@@ -75,6 +92,13 @@ public class Emisora {
         return v;
     }
 
+    public void reset(){
+        currentChunk = 0;
+        filesPosition = 0;
+        changeSong();
+        actualTrack.load();
+    }
+
     private boolean hasConfigFile(){
         return new File(path.toString() + "/config.json").exists();
     }
@@ -91,9 +115,10 @@ public class Emisora {
                     "La versión de los JSON de "  + getName() + " es inferior a la esperada (" + EmisorJSON.EMISORVERSION +"), puede causar errores\n",
                     ActionType.ERROR));
         }
-        setFrequency(obj.getFrecuency());
+        setFrequency(obj.getFrequency());
     }
 
+    public String getAudioName(){return actualTrack.getName();}
     public String getName() {
         return name;
     }
@@ -102,9 +127,7 @@ public class Emisora {
         return frequency;
     }
 
-    public void setFrequency(double frequency) {
-        this.frequency = frequency;
-    }
+    public void setFrequency(double frequency) {this.frequency = frequency; }
 
     public Audio getActualTrack() {
         return actualTrack;
