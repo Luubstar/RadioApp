@@ -27,7 +27,7 @@ public class Grupo {
     public String toString() {
         StringBuilder r = new StringBuilder().append(name).append(":");
         for(Emisora e : emisoras){
-            r.append("\n").append(e.getName()).append(" -> ").append(e.getFrecuency()).append(" MHz");
+            r.append("\n").append(e.getName()).append(" -> ").append(e.getFrequency()).append(" MHz");
         }
         return r.toString();
     }
@@ -52,7 +52,7 @@ public class Grupo {
 
         setFrecuency(obj.getMaxFrecuency());
         for(Emisora e : getEmisoras()){
-            if (e.getFrecuency() > getMaxFrecuency()){
+            if (e.getFrequency() > getMaxFrecuency()){
                 ActionHandler.filterAction(new Action("Inicialización grupos",
                         "La emisora " + e.getName() + " está fuera de la frecuencia máxima del grupo " + getName(),
                         ActionType.QUIT));

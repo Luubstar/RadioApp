@@ -1,4 +1,5 @@
 package net.radioapp.client;
+import net.radioapp.client.Audio.ClientPlayer;
 import net.radioapp.web.Network.PackageTypes;
 import net.radioapp.web.Network.UDPDataArray;
 
@@ -31,7 +32,7 @@ public class ClientActions extends Thread{
                 case INICIOEMISION:
                     int samplerate = UDPDataArray.byteToInt(packet.getData(6,9));
                     int sampleSizeInBits = UDPDataArray.byteToInt(packet.getData(10,13));
-                    int channels = UDPDataArray.byteToInt(packet.getData(14,18));
+                    int channels = UDPDataArray.byteToInt(packet.getData(14,17));
                     AudioFormat format = new AudioFormat((float) samplerate, sampleSizeInBits, channels, true, false);
                     p.setAudioFormat(format);
                     break;

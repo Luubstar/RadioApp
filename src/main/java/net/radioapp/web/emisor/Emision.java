@@ -44,33 +44,18 @@ public class Emision extends Thread{
 
     @Override
     public void run() {
-        int SECONDSFOREMISSION = 3;
         while (connected){
-
             synchronized (this){while (!isPlaying){
                     try {wait();} catch (InterruptedException e) {throw new RuntimeException(e);}}}
-
-            long stime = System.nanoTime();
             try {waitForClients();} catch (InterruptedException e) {throw new RuntimeException(e);}
 
             broadcast(emisora.getActualTrack().getMetadata().getData(), clientes, PackageTypes.INICIOEMISION);
             try{
-                long etime = System.nanoTime();
-                int sdif = (int) (etime - stime)/1000000000;
-                sdif = Math.max(sdif, 0);
-                System.out.println(emisora.getTime());
-                emisora.addSeconds(sdif + SECONDSFOREMISSION);
-
-                byte[] buffer = emisora.getSecondsFromAudio(SECONDSFOREMISSION);
-                if(buffer.length % 4 != 0){
-                    byte[] aux = new byte[buffer.length - buffer.length%4];
-                    System.arraycopy(buffer, 0, aux, 0, buffer.length - buffer.length%4 );
-                    buffer = aux;
-                }
-
-                System.out.println(buffer.length%4);
+                Thread.sleep(10);
+                byte[] buffer = emisora.getNextChunk();
 
                 broadcast(buffer, clientes, PackageTypes.EMISION);
+                Thread.sleep(1000);
                 broadcast(new byte[1], clientes, PackageTypes.FINEMISION);
             }
             catch (Exception e){
@@ -86,8 +71,9 @@ public class Emision extends Thread{
     public void kill(){connected = false;}
     public synchronized void addClient(Client c){
         lockClientes.lock();
-        try{clientes.add(c); notify();}
+        try{if(!clientes.contains(c)) {clientes.add(c); notify();}}
         finally{lockClientes.unlock();}}
+
     public synchronized void removeClient(Client c){
         lockClientes.lock();
         try{clientes.remove(c); notify();}

@@ -24,7 +24,7 @@ public class ClientHandler {
         if(!checkIfContains(address)){
             Client c = new Client(address, 100);
             clientes.add(c);
-            return  c;
+            return c;
         }
         else{return getClient(address);}
     }
@@ -52,7 +52,7 @@ public class ClientHandler {
 
         if (type.equals(PackageTypes.HELO) || client.isNew()){
             client.turnNew();
-            ActionHandler.log("Nuevo cliente conectado");
+            ActionHandler.log("Nuevo cliente escuchando");
             client.setRequested();
             new UDPEmitter(new UDPPacket(client,"Conectado satisfactoriamente".getBytes(), PackageTypes.LOG)).start();
         }

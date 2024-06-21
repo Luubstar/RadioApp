@@ -19,17 +19,19 @@ import java.util.stream.Stream;
 public class Emisora {
     private final String name;
     private final Path path;
-    private double frecuency;
-    private final List<Audio> ficheros = new ArrayList<>();
+    private double frequency;
+    private final List<Audio> files = new ArrayList<>();
     private Audio actualTrack;
-    private float time;
+    private int filesPosition = 0;
+    private int currentChunk = 0;
 
     public Emisora(String name, Path p) {
         this.path = p;
         this.name = name;
         try{
             readFiles();
-            actualTrack = ficheros.getFirst();
+            changeSong();
+            actualTrack.load();
         }
         catch (IOException e){
             ActionHandler.handleException(e, "Fallo al leer los ficheros en la creación de las emisoras");
@@ -42,7 +44,7 @@ public class Emisora {
             {
                 try {
                     Audio a = Audio.newAudio(e.toFile());
-                    ficheros.add(a);
+                    this.files.add(a);
                 }
                 catch (UnsupportedAudioFileException | IOException ex) {
                     ActionHandler.handleException(ex, "Archivo de audio " + e.getFileName() + " no soportado");}
@@ -50,36 +52,27 @@ public class Emisora {
         }
     }
 
-    public float getTime() {
-        return time;
-    }
-
-    public void addSeconds(float s){
-        time += s;
-        int songduration = (int) actualTrack.getArchivo().length() / actualTrack.getBytespersecond();
-        if(time >= songduration){
-            time -= songduration;
-            changeSong();
-            addSeconds(0);
-        }
-    }
-
     private void changeSong(){
-        //TODO: Cambiar de pista
-        actualTrack = ficheros.getFirst();
+        Audio oldTrack = actualTrack;
+        currentChunk = 0;
+
+        if(filesPosition >= files.size()){filesPosition = 0;}
+        actualTrack = files.get(filesPosition);
+        if(oldTrack != actualTrack){
+            if(oldTrack!=null) {oldTrack.unload();}
+            actualTrack.load();
+        }
+        filesPosition++;
     }
 
-    public byte[] getSecondsFromAudio(int seconds) throws IOException {
-        byte[] buffer = actualTrack.getSeconds((int) time, seconds);
-        if (buffer.length < actualTrack.getBytespersecond() * seconds){
+    public byte[] getNextChunk(){
+        byte[] v = actualTrack.getChunk(currentChunk);
+        currentChunk++;
+        if (v == null){
             changeSong();
-            byte[] aux = getSecondsFromAudio(seconds);
-            byte[] res = new byte[aux.length + buffer.length];
-            System.arraycopy(buffer,0,buffer,0,buffer.length);
-            System.arraycopy(aux,0, res, buffer.length,res.length);
-            return res;
+            v = getNextChunk();
         }
-        return buffer;
+        return v;
     }
 
     private boolean hasConfigFile(){
@@ -98,19 +91,19 @@ public class Emisora {
                     "La versión de los JSON de "  + getName() + " es inferior a la esperada (" + EmisorJSON.EMISORVERSION +"), puede causar errores\n",
                     ActionType.ERROR));
         }
-        setFrecuency(obj.getFrecuency());
+        setFrequency(obj.getFrecuency());
     }
 
     public String getName() {
         return name;
     }
 
-    public double getFrecuency() {
-        return frecuency;
+    public double getFrequency() {
+        return frequency;
     }
 
-    public void setFrecuency(double frecuency) {
-        this.frecuency = frecuency;
+    public void setFrequency(double frequency) {
+        this.frequency = frequency;
     }
 
     public Audio getActualTrack() {

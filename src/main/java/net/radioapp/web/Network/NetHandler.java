@@ -115,7 +115,7 @@ public class NetHandler implements WebHandler {
         start();
 
         ActionHandler.log(Colors.Green.colorize("Sistema reiniciado"));
-        System.out.println(emisionesActivas.getFirst().getEmisora().getFrecuency());
+        System.out.println(emisionesActivas.getFirst().getEmisora().getFrequency());
     }
 
     @Override
@@ -131,11 +131,11 @@ public class NetHandler implements WebHandler {
 
     public static void assingClient(Client c){
         if(c.getEmisora() != null){
-            if(c.getEmisora().getEmisora().getFrecuency() == c.getFrecuency() && c.getEmisora().containsClient(c)){return;}
+            if(c.getEmisora().getEmisora().getFrequency() == c.getFrecuency() && c.getEmisora().containsClient(c)){return;}
             c.getEmisora().removeClient(c);
         }
 
-        for(Emision a : emisionesActivas){if(a.getEmisora().getFrecuency() == c.getFrecuency()){
+        for(Emision a : emisionesActivas){if(a.getEmisora().getFrequency() == c.getFrecuency()){
             a.addClient(c);
             c.setEmisora(a);
             c.setRequested();
@@ -163,7 +163,8 @@ public class NetHandler implements WebHandler {
                     ClientHandler.moveAll(Double.parseDouble(action.getRes()));
                     send(new UDPDataArray(action.getRes().getBytes()), PackageTypes.MOVER);
                     ActionHandler.log("Todos los clientes han sido" +
-                            "cambiados a la frecuencia ");}
+                            "cambiados a la frecuencia ");
+                }
                 catch(NumberFormatException e){ActionHandler.handleException(e, "La frecuencia debe de ser un número válido");}
                 break;
 
