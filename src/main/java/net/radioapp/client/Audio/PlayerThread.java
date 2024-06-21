@@ -8,11 +8,16 @@ public class PlayerThread extends  Thread {
     private boolean canRun = true;
     private boolean running = true;
     private byte[] data = null;
+    private byte[] oldData = new byte[0];
     public  PlayerThread(ClientPlayer p){player = p;}
 
     @Override
     public void run() {
         int bufferSize = player.line.getBufferSize();
+        int totalBytesRead;
+        int bytesReaded;
+        boolean calledForMore;
+
         while(running) {
             synchronized (this){
             while (data == null){
@@ -20,9 +25,8 @@ public class PlayerThread extends  Thread {
             if(!running){break;}}
 
             canRun = true;
-            int totalBytesRead = 0;
-            int bytesReaded;
-            boolean calledForMore = false;
+            totalBytesRead = 0;
+            calledForMore = false;
 
             while (totalBytesRead < data.length && canRun) {
                 int read = Math.min(bufferSize, data.length - totalBytesRead);
@@ -35,17 +39,25 @@ public class PlayerThread extends  Thread {
                     calledForMore = true;
                     player.pedirMas();
                 }
-
-                if (totalBytesRead >= data.length || read == 0) { break;}
+                if (totalBytesRead >= data.length || read == 0) {
+                    oldData = new byte[read];
+                    System.arraycopy(data, data.length-read, oldData, 0, read);
+                    break;
+                }
             }
             if (!calledForMore) {player.pedirMas();}
 
             data = null;
-            player.isPlaying = false;
             canRun = false;
         }
     }
-    public synchronized void execute(byte[] d){data = d; notify();}
+    public synchronized void execute(byte[] d){
+        data = new byte[d.length + oldData.length];
+        System.arraycopy(oldData, 0, data, 0, oldData.length);
+        System.arraycopy(d, 0, data, oldData.length, d.length);
+        oldData = new byte[0];
+        notify();
+    }
     public boolean isStoped(){return !canRun;}
     public synchronized  void stopPlayer(){canRun = false;}
 }

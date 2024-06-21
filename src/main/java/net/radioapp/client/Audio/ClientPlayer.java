@@ -22,7 +22,6 @@ public class ClientPlayer extends  Thread{
     public boolean running;
     private AudioFormat nextFormat = getAudioFormat();
     private AudioFormat oldformat = getAudioFormat();
-    protected boolean isPlaying = false;
     private boolean connected = true;
     protected byte[] readingBuffer;
     private PlayerThread p;
@@ -60,13 +59,11 @@ public class ClientPlayer extends  Thread{
             if(line.isActive()) {line.close();}
             line.open(nextFormat);
             line.start();
-            isPlaying = false;
             p = new PlayerThread(this);
             p.start();
 
             while(connected) {
-                if (!data.isEmpty() && !isPlaying && p.isStoped()) {
-                    isPlaying = true;
+                if (!data.isEmpty() && p.isStoped()) {
                     readingBuffer = data.poll().toByteArray();
 
                     if(!nextFormat.matches(oldformat)){
@@ -109,6 +106,5 @@ public class ClientPlayer extends  Thread{
         p.stopPlayer();
         data.clear();
         entrada.clear();
-        isPlaying = false;
     }
 }
