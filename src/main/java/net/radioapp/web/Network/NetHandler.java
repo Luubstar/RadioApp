@@ -1,6 +1,5 @@
 package net.radioapp.web.Network;
 
-import net.radioapp.Main;
 import net.radioapp.commandController.actions.ActionHandler;
 import net.radioapp.WebHandler;
 import net.radioapp.commandController.actions.Action;
@@ -16,7 +15,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Stream;
 
@@ -25,7 +23,6 @@ public class NetHandler implements WebHandler {
     private static final List<Path> emisorasPaths = new ArrayList<>();
     private static final List<Path> groupsPaths = new ArrayList<>();
     private static final List<Grupo> gruposList = new ArrayList<>();
-    private static final List<Emisora> emisorasList = new ArrayList<>();
     private static final List<Emision>  emisionesActivas = new ArrayList<>();
     private static Grupo grupoActual;
     private UDPRecibe recibidor;
@@ -35,35 +32,40 @@ public class NetHandler implements WebHandler {
         groupsPaths.clear();
         emisorasPaths.clear();
         gruposList.clear();
-        emisorasList.clear();
         checkIfHasStructure();
-        Stream<Path> paths = Files.list(mainDir);
-        paths.filter(Files::isDirectory).forEach(groupsPaths::add);
+        try(Stream<Path> paths = Files.list(mainDir)) {
+            paths.filter(Files::isDirectory).forEach(groupsPaths::add);
 
-        for(Path p : groupsPaths){
-            emisorasPaths.clear();
-            Stream<Path> emisoras = Files.list(p);
-            emisoras.filter(Files::isDirectory).forEach(emisorasPaths::add);
-            List<Emisora> temp = new ArrayList<>();
+            for (Path p : groupsPaths) {
+                emisorasPaths.clear();
+                try(Stream<Path> emisoras = Files.list(p))
+                {
+                emisoras.filter(Files::isDirectory).forEach(emisorasPaths::add);
+                List<Emisora> temp = new ArrayList<>();
 
-            for(Path e: emisorasPaths){
-                Emisora emisora = new Emisora(e.getFileName().toString(), e);
-                temp.add(emisora);
-                emisorasList.add(emisora);
-                emisora.readConfigFile();
+                for (Path e : emisorasPaths) {
+                    Emisora emisora = new Emisora(e.getFileName().toString(), e);
+                    temp.add(emisora);
+                    emisora.readConfigFile();
+                }
+
+                Grupo g = new Grupo(p.getFileName().toString(), p, temp);
+                g.readConfigFile();
+                gruposList.add(g);
+                }
+                catch (Exception e){}
             }
-
-            Grupo g = new Grupo(p.getFileName().toString(), p, temp);
-            g.readConfigFile();
-            gruposList.add(g);
+            grupoActual = gruposList.getFirst();
+            recibidor = new UDPRecibe();
+            recibidor.start();
+            if (!ClientHandler.isOnline()) {
+                ClientHandler.setOnline(true);
+                ActionHandler.log(Colors.Green.colorize("> Sistema iniciado"));
+            } else {
+                ActionHandler.log(Colors.Red.colorize(" El sistema ya está iniciado"));
+            }
         }
-        grupoActual = gruposList.getFirst();
-        recibidor = new UDPRecibe();
-        recibidor.start();
-        if(!ClientHandler.isOnline()){
-            ClientHandler.setOnline(true);
-            ActionHandler.log(Colors.Green.colorize("> Sistema iniciado"));}
-        else {ActionHandler.log(Colors.Red.colorize(" El sistema ya está iniciado"));}
+        catch (Exception e){}
     }
 
     public void checkIfHasStructure() throws  IOException{
@@ -199,7 +201,6 @@ public class NetHandler implements WebHandler {
             }
             i++;
             r.append("> ").append(index).append(" ").append(data).append("\n");
-
         }
         ActionHandler.log(r.toString());
     }
@@ -219,7 +220,6 @@ public class NetHandler implements WebHandler {
             emisionesActivas.clear();
 
             for(Emisora a : grupoActual.emisoras){
-                System.out.println(a.getName());
                 Emision em = new Emision(a);
                 em.start();
                 emisionesActivas.add(em);

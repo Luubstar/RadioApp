@@ -4,9 +4,6 @@ import net.radioapp.commandController.actions.Action;
 import net.radioapp.commandController.actions.ActionType;
 import net.radioapp.commandController.commands.*;
 
-import java.io.File;
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -47,9 +44,9 @@ public class CommandController {
     public String getHelpCommands(){
         StringBuilder res = new StringBuilder().append("\n");
         for(Command c: comandos){
-            StringBuilder name = new StringBuilder().append(c.getAliasesAndName()[0]);
+            StringBuilder name = new StringBuilder().append(Colors.Green.colorize("> " + c.getAliasesAndName()[0]));
             for (int i = 1; i<c.getAliasesAndName().length;i++){
-                name.append(", ").append(c.getAliasesAndName()[i]);
+                name.append(Colors.Green.colorize(", " + c.getAliasesAndName()[i]));
             }
             res.append(name).append(" - ").append(c.getResumeMessage()).append("\n");
         }

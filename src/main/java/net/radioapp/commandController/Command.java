@@ -4,7 +4,7 @@ import net.radioapp.commandController.actions.Action;
 import net.radioapp.commandController.actions.ActionType;
 
 public abstract class Command {
-    protected String name, description, helpMessage, resumeMessage, resultMessage;
+    protected String name, helpMessage, resumeMessage, resultMessage;
     protected String[] aliases = new String[0];
     public Action call(String[] args){return new Action("error","Acción no implementada", ActionType.LOG);}
     public String getName() {return name;}
@@ -17,9 +17,7 @@ public abstract class Command {
         }
         return res;
     }
-    public String getDescription() {return description;}
     public String getHelpMessage() {return helpMessage;}
-    public String getResultMessage() {return resultMessage;}
     public String getResumeMessage() {
         return resumeMessage;
     }

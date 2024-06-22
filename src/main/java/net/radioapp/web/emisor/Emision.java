@@ -9,7 +9,6 @@ import net.radioapp.web.Network.PackageTypes;
 import net.radioapp.web.Client;
 import net.radioapp.web.Network.UDPDataArray;
 
-import java.awt.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -59,7 +58,7 @@ public class Emision extends Thread{
 
             long momentoFinal = System.currentTimeMillis();
             int segundos = (int) Math.ceil((double) (momentoFinal - momentoInicial) /1000);
-            System.out.println(emisora.getName() + " " + segundos + " " + empty);
+
             if(empty) {emisora.addSeconds(segundos); empty = false;}
 
             broadcast(emisora.getActualTrack().getMetadata().getData(), clientes, PackageTypes.INICIOEMISION);

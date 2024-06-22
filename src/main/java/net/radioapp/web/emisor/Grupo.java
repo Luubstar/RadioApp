@@ -4,7 +4,6 @@ import net.radioapp.commandController.Colors;
 import net.radioapp.commandController.actions.ActionHandler;
 import net.radioapp.commandController.actions.Action;
 import net.radioapp.commandController.actions.ActionType;
-import net.radioapp.web.Network.NetHandler;
 import net.radioapp.web.json.GrupoJSON;
 import net.radioapp.web.json.GrupoJSONObject;
 
@@ -29,7 +28,7 @@ public class Grupo {
 
     @Override
     public String toString() {
-        return Colors.Green.colorize(getName()) + Colors.Blue.colorize(" (" + minFrequency + " - " + maxFrequency + " MHz)\n");
+        return Colors.Green.colorize(getName()) + Colors.Blue.colorize(" (" + minFrequency + " - " + maxFrequency + " MHz)");
     }
 
     private boolean hasConfigFile(){

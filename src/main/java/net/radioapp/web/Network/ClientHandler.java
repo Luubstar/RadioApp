@@ -9,7 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ClientHandler {
-    public static final int MAX_LOSTED_PINGS = 40;
+    public static final int MAX_LOSTED_PINGS = 10;
     private static final List<Client> clientes = new ArrayList<>();
     private static boolean online;
 

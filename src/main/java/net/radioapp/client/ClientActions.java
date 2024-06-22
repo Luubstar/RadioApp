@@ -45,6 +45,7 @@ public class ClientActions extends Thread{
                     break;
                 case MOVER:
                     System.out.println("Cambiando frecuencia a " + command);
+                    p.kill();
                     break;
                 case LOG:
                     System.out.println(command);
